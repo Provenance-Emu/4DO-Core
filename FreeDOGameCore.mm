@@ -453,7 +453,7 @@ static void writeSaveFile(const char* path)
     return CGRectMake(0, 0, videoWidth, videoHeight);
 }
 
-- (OEIntSize)bufferSize
+- (CGSize)bufferSize
 {
     return CGSizeMake(videoWidth, videoHeight);
 }
