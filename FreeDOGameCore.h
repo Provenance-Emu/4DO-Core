@@ -26,7 +26,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <OpenEmuBase/OEGameCore.h>
+#import <OpenEmuBase/PVEmulatorCore.h>
 
 @class OERingBuffer;
 
@@ -63,6 +63,6 @@ unsigned char nvramhead[]=
     0,0,0,0x84,0,0,0x76,0x68,0,0,0,0x14
 };
 
-OE_EXPORTED_CLASS
-@interface FreeDOGameCore : OEGameCore
+__attribute__((visibility("default")))
+@interface FreeDOGameCore : PVEmulatorCore
 @end
