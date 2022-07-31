@@ -26,9 +26,9 @@
  */
 
 #import "FreeDOGameCore.h"
-#import <OpenEmuBase/OERingBuffer.h>
-#import "OE3DOSystemResponderClient.h"
-#import <OpenGL/gl.h>
+#import <PVSupport/OERingBuffer.h>
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
 
 #include "freedocore.h"
 #include "frame.h"
@@ -58,7 +58,7 @@ typedef struct{
 
 inputState internal_input_state[6];
 
-@interface FreeDOGameCore () <OE3DOSystemResponderClient>
+@interface PVFreeDOGameCore () <PV3DOSystemResponderClient>
 {
     NSString *romName;
     
@@ -80,9 +80,9 @@ inputState internal_input_state[6];
 }
 @end
 
-FreeDOGameCore *current;
+PVFreeDOGameCore *current;
 
-@implementation FreeDOGameCore
+@implementation PVFreeDOGameCore
 
 // libfreedo callback
 static void *fdcCallback(int procedure, void *data)
@@ -293,7 +293,7 @@ static void writeSaveFile(const char* path)
     
     // load NVRAM save file
     NSString *extensionlessFilename = [[path lastPathComponent] stringByDeletingPathExtension];
-    NSString *batterySavesDirectory = [current batterySavesDirectoryPath];
+    NSString *batterySavesDirectory = [current batterySavesPath];
 
     if([batterySavesDirectory length] != 0)
     {
@@ -394,7 +394,7 @@ static void writeSaveFile(const char* path)
 {
     // save NVRAM file
     NSString *extensionlessFilename = [[romName lastPathComponent] stringByDeletingPathExtension];
-    NSString *batterySavesDirectory = [self batterySavesDirectoryPath];
+    NSString *batterySavesDirectory = [self batterySavesPath];
     
     if([batterySavesDirectory length] != 0)
     {
@@ -465,7 +465,8 @@ static void writeSaveFile(const char* path)
 
 - (GLenum)pixelType
 {
-    return GL_UNSIGNED_INT_8_8_8_8_REV;
+    return GL_UNSIGNED_INT;
+//    return GL_UNSIGNED_INT_8_8_8_8_REV;
 }
 
 #pragma mark - Audio
@@ -510,43 +511,43 @@ static void writeSaveFile(const char* path)
 }
 
 #pragma mark - Input
-- (oneway void)didPush3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
+- (void)didPush3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player
 {
     player--;
     
     switch(button)
     {
-        case OE3DOButtonA:
+        case PV3DOButtonA:
             internal_input_state[0].buttons|=INPUTBUTTONA;
             break;
-        case OE3DOButtonB:
+        case PV3DOButtonB:
             internal_input_state[0].buttons|=INPUTBUTTONB;
             break;
-        case OE3DOButtonC:
+        case PV3DOButtonC:
             internal_input_state[0].buttons|=INPUTBUTTONC;
             break;
-        case OE3DOButtonX:
+        case PV3DOButtonX:
             internal_input_state[0].buttons|=INPUTBUTTONX;
             break;
-        case OE3DOButtonP:
+        case PV3DOButtonP:
             internal_input_state[0].buttons|=INPUTBUTTONP;
             break;
-        case OE3DOButtonLeft:
+        case PV3DOButtonLeft:
             internal_input_state[0].buttons|=INPUTBUTTONLEFT;
             break;
-        case OE3DOButtonRight:
+        case PV3DOButtonRight:
             internal_input_state[0].buttons|=INPUTBUTTONRIGHT;
             break;
-        case OE3DOButtonUp:
+        case PV3DOButtonUp:
             internal_input_state[0].buttons|=INPUTBUTTONUP;
             break;
-        case OE3DOButtonDown:
+        case PV3DOButtonDown:
             internal_input_state[0].buttons|=INPUTBUTTONDOWN;
             break;
-        case OE3DOButtonL:
+        case PV3DOButtonL:
             internal_input_state[0].buttons|=INPUTBUTTONL;
             break;
-        case OE3DOButtonR:
+        case PV3DOButtonR:
             internal_input_state[0].buttons|=INPUTBUTTONR;
             break;
             
@@ -555,43 +556,42 @@ static void writeSaveFile(const char* path)
     }
 }
 
-- (oneway void)didRelease3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
-{
+- (void)didRelease3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player {
     player--;
     
     switch(button)
     {
-        case OE3DOButtonA:
+        case PV3DOButtonA:
             internal_input_state[0].buttons&=~INPUTBUTTONA;
             break;
-        case OE3DOButtonB:
+        case PV3DOButtonB:
             internal_input_state[0].buttons&=~INPUTBUTTONB;
             break;
-        case OE3DOButtonC:
+        case PV3DOButtonC:
             internal_input_state[0].buttons&=~INPUTBUTTONC;
             break;
-        case OE3DOButtonX:
+        case PV3DOButtonX:
             internal_input_state[0].buttons&=~INPUTBUTTONX;
             break;
-        case OE3DOButtonP:
+        case PV3DOButtonP:
             internal_input_state[0].buttons&=~INPUTBUTTONP;
             break;
-        case OE3DOButtonLeft:
+        case PV3DOButtonLeft:
             internal_input_state[0].buttons&=~INPUTBUTTONLEFT;
             break;
-        case OE3DOButtonRight:
+        case PV3DOButtonRight:
             internal_input_state[0].buttons&=~INPUTBUTTONRIGHT;
             break;
-        case OE3DOButtonUp:
+        case PV3DOButtonUp:
             internal_input_state[0].buttons&=~INPUTBUTTONUP;
             break;
-        case OE3DOButtonDown:
+        case PV3DOButtonDown:
             internal_input_state[0].buttons&=~INPUTBUTTONDOWN;
             break;
-        case OE3DOButtonL:
+        case PV3DOButtonL:
             internal_input_state[0].buttons&=~INPUTBUTTONL;
             break;
-        case OE3DOButtonR:
+        case PV3DOButtonR:
             internal_input_state[0].buttons&=~INPUTBUTTONR;
             break;
             
@@ -675,8 +675,7 @@ char CalculateDeviceHighByte(int deviceNumber)
 
 #pragma mark - Helpers
 
-- (void)initVideo
-{
+- (void)initVideo {
     //HightResMode = 1;
     videoWidth = 320;
     videoHeight = 240;
@@ -684,9 +683,8 @@ char CalculateDeviceHighByte(int deviceNumber)
     memset(frame, 0, sizeof(VDLFrame));
 }
 
-- (void)loadBIOSes
-{
-    NSString *rom1Path = [[self biosDirectoryPath] stringByAppendingPathComponent:@"panafz10.bin"];
+- (void)loadBIOSes {
+    NSString *rom1Path = [[self BIOSPath] stringByAppendingPathComponent:@"panafz10.bin"];
     NSData *data = [NSData dataWithContentsOfFile:rom1Path];
     NSUInteger len = [data length];
     assert(len==ROM1_SIZE);
@@ -694,24 +692,20 @@ char CalculateDeviceHighByte(int deviceNumber)
     memcpy(biosRom1Copy, [data bytes], len);
     
     // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for soem JAP games. We still have to init the memory tho
-    NSString *rom2Path = [[self biosDirectoryPath] stringByAppendingPathComponent:@"rom2.rom"];
+    NSString *rom2Path = [[self BIOSPath] stringByAppendingPathComponent:@"rom2.rom"];
     data = [NSData dataWithContentsOfFile:rom2Path];
-    if(data)
-    {
+    if(data) {
         len = [data length];
         assert(len==ROM2_SIZE);
         biosRom2Copy = (unsigned char *)malloc(len);
         memcpy(biosRom2Copy, [data bytes], len);
-    }
-    else
-    {
+    } else {
         biosRom2Copy = (unsigned char *)malloc(len);
         memset(biosRom2Copy, 0, len);
     }
 }
 
-static uint32_t reverseBytes(uint32_t value)
-{
+static uint32_t reverseBytes(uint32_t value) {
     return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 | (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
 }
 

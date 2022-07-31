@@ -25,10 +25,9 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import <OpenEmuBase/PVEmulatorCore.h>
-
-@class OERingBuffer;
+#import <UIKit/UIKit.h>
+#import <PVSupport/PVSupport.h>
+#import <PVSupport/PVSupport-Swift.h>
 
 struct VolumeHeader             // 132 bytes
 {
@@ -64,5 +63,5 @@ unsigned char nvramhead[]=
 };
 
 __attribute__((visibility("default")))
-@interface FreeDOGameCore : PVEmulatorCore
+@interface PVFreeDOGameCore : PVEmulatorCore <PV3DOSystemResponderClient>
 @end
