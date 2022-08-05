@@ -73,6 +73,9 @@ inputState internal_input_state[6];
     BOOL isSwapFrameSignaled;
     
     uint32_t *videoBuffer;
+    uint32_t *videoBufferA;
+    uint32_t *videoBufferB ;
+
     int videoWidth, videoHeight;
     //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
     int32_t sampleBuffer[TEMP_BUFFER_SIZE];
@@ -80,13 +83,13 @@ inputState internal_input_state[6];
 }
 @end
 
-PVFreeDOGameCore *current;
-
+static __weak PVFreeDOGameCore * _Nonnull _current;
 @implementation PVFreeDOGameCore
 
 // libfreedo callback
 static void *fdcCallback(int procedure, void *data)
 {
+    __strong PVFreeDOGameCore * current = _current;
     switch(procedure)
     {
         case EXT_READ_ROMS:
@@ -222,19 +225,21 @@ static void writeSaveFile(const char* path)
     }
 }
 
-- (id)init
-{
-    if((self = [super init]))
-    {
-        current = self;
+- (instancetype)init {
+    if((self = [super init])) {
+        _current = self;
+        videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+        videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+        videoBuffer = videoBufferA;
     }
     
     return self;
 }
 
-- (void)dealloc
-{
-    free(videoBuffer);
+- (void)dealloc {
+    if (videoBuffer) {
+        free(videoBuffer);
+    }
 }
 
 #pragma mark Execution
@@ -293,7 +298,7 @@ static void writeSaveFile(const char* path)
     
     // load NVRAM save file
     NSString *extensionlessFilename = [[path lastPathComponent] stringByDeletingPathExtension];
-    NSString *batterySavesDirectory = [current batterySavesPath];
+    NSString *batterySavesDirectory = [self batterySavesPath];
 
     if([batterySavesDirectory length] != 0)
     {
@@ -433,7 +438,6 @@ static void writeSaveFile(const char* path)
 - (const void *)getVideoBufferWithHint:(void *)hint
 {
     if(!hint) {
-        if (!videoBuffer) videoBuffer = (uint32_t*)malloc(videoWidth * videoHeight * 4);
         hint = videoBuffer;
     }
 
@@ -441,49 +445,55 @@ static void writeSaveFile(const char* path)
     {
         isSwapFrameSignaled = NO;
         struct BitmapCrop bmpcrop;
-        ScalingAlgorithm sca;
+        ScalingAlgorithm sca = None; //HQ4X;
         int rw, rh;
         Get_Frame_Bitmap((VDLFrame *)frame, hint, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
     }
     return videoBuffer;
 }
 
-- (CGRect)screenRect
-{
+- (void)swapBuffers {
+    if (videoBuffer == videoBufferA) {
+        videoBuffer = videoBufferB;
+    } else {
+        videoBuffer = videoBufferA;
+    }
+}
+
+-(BOOL)isDoubleBuffered {
+    return YES;
+}
+
+
+- (CGRect)screenRect {
     return CGRectMake(0, 0, videoWidth, videoHeight);
 }
 
-- (CGSize)bufferSize
-{
+- (CGSize)bufferSize {
     return CGSizeMake(videoWidth, videoHeight);
 }
 
-- (GLenum)pixelFormat
-{
+- (GLenum)pixelFormat {
     return GL_BGRA;
 }
 
-- (GLenum)pixelType
-{
+- (GLenum)pixelType {
     return GL_UNSIGNED_INT;
 //    return GL_UNSIGNED_INT_8_8_8_8_REV;
 }
 
 #pragma mark - Audio
-- (double)audioSampleRate
-{
+- (double)audioSampleRate {
     return 44100;
 }
 
-- (NSUInteger)channelCount
-{
+- (NSUInteger)channelCount {
     return 2;
 }
 
 #pragma mark - Save States
 
-- (void)saveStateToFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block
-{
+- (void)saveStateToFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block {
     size_t size = (uintptr_t)_freedo_Interface(FDP_GET_SAVE_SIZE, (void*)0);
 
     NSMutableData *data = [NSMutableData dataWithLength:size];
@@ -495,8 +505,7 @@ static void writeSaveFile(const char* path)
     block(didSucceed, error);
 }
 
-- (void)loadStateFromFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block
-{
+- (void)loadStateFromFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block {
     NSError *error;
     NSData *saveData = [NSData dataWithContentsOfFile:fileName options:0 error:&error];
     if (!saveData) {
@@ -511,8 +520,7 @@ static void writeSaveFile(const char* path)
 }
 
 #pragma mark - Input
-- (void)didPush3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player
-{
+- (void)didPush3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player {
     player--;
     
     switch(button)
@@ -600,16 +608,14 @@ static void writeSaveFile(const char* path)
     }
 }
 
-int CheckDownButton(int deviceNumber,int button)
-{
+int CheckDownButton(int deviceNumber,int button) {
     if(internal_input_state[deviceNumber].buttons&button)
         return 1;
     else
         return 0;
 }
 
-char CalculateDeviceLowByte(int deviceNumber)
-{
+char CalculateDeviceLowByte(int deviceNumber) {
     char returnValue = 0;
     
     returnValue |= 0x01 & 0; // unknown
