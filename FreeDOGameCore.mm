@@ -29,6 +29,7 @@
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import <PVSupport/PVSupport-Swift.h>
 
 #include "freedocore.h"
 #include "frame.h"
