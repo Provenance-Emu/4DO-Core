@@ -27,8 +27,13 @@
 
 #import "FreeDOGameCore.h"
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#if __has_include(<OpenGLES/ES3/gl.h>)
+#import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/ES3/glext.h>
+#else
+#import <OpenGL/OpenGL.h>
+#import <GLUT/GLUT.h>
+#endif
 #import <PVSupport/PVSupport-Swift.h>
 
 #include "freedocore.h"

@@ -26,44 +26,16 @@
 		B3D1802928963F7D001207AF /* frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94551A0E19A570170080929A /* frame.cpp */; };
 		B3D1802A28963F7D001207AF /* SPORT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123C1582B03F003F64E5 /* SPORT.cpp */; };
 		B3D1802B28963F7D001207AF /* bitop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122A1582B03E003F64E5 /* bitop.cpp */; };
-		B3D1802E28963F86001207AF /* vdlp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123F1582B03F003F64E5 /* vdlp.cpp */; };
-		B3D1802F28963F86001207AF /* Clio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122C1582B03E003F64E5 /* Clio.cpp */; };
-		B3D1803028963F86001207AF /* bitop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122A1582B03E003F64E5 /* bitop.cpp */; };
-		B3D1803128963F86001207AF /* Madam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12371582B03F003F64E5 /* Madam.cpp */; };
-		B3D1803228963F86001207AF /* frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94551A0E19A570170080929A /* frame.cpp */; };
-		B3D1803328963F86001207AF /* arm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12281582B03E003F64E5 /* arm.cpp */; };
-		B3D1803428963F86001207AF /* Iso.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12341582B03F003F64E5 /* Iso.cpp */; };
-		B3D1803528963F86001207AF /* SPORT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123C1582B03F003F64E5 /* SPORT.cpp */; };
-		B3D1803628963F86001207AF /* DiagPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122E1582B03E003F64E5 /* DiagPort.cpp */; };
-		B3D1803728963F86001207AF /* DSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12301582B03E003F64E5 /* DSP.cpp */; };
-		B3D1803828963F86001207AF /* XBUS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12411582B03F003F64E5 /* XBUS.cpp */; };
-		B3D1803928963F86001207AF /* _3do_sys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12271582B03E003F64E5 /* _3do_sys.cpp */; };
-		B3D1803A28963F86001207AF /* quarz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123A1582B03F003F64E5 /* quarz.cpp */; };
 		B3D1804928963FF0001207AF /* FreeDO.h in Headers */ = {isa = PBXBuildFile; fileRef = B3D1804828963FF0001207AF /* FreeDO.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B3D1804D28964018001207AF /* FreeDOGameCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */; };
-		B3D1805028964039001207AF /* cd.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBE81582C37400EAC45A /* cd.c */; };
-		B3D1805128964039001207AF /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
-		B3D1805228964039001207AF /* cue_parser.ym in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEE1582C37400EAC45A /* cue_parser.ym */; };
-		B3D1805328964039001207AF /* cue_scanner.lm in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF01582C37400EAC45A /* cue_scanner.lm */; };
-		B3D1805428964039001207AF /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF71582C37400EAC45A /* rem.c */; };
-		B3D1805528964039001207AF /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
-		B3D1805F28964172001207AF /* FreeDO.h in Headers */ = {isa = PBXBuildFile; fileRef = B3D1804828963FF0001207AF /* FreeDO.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B3D1806128964172001207AF /* FreeDOGameCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */; };
 		B3D1806A289642B4001207AF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D18069289642B4001207AF /* UIKit.framework */; };
 		B3D1806D289642BB001207AF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1806B289642BB001207AF /* OpenGLES.framework */; platformFilter = ios; };
 		B3D1806E289642BB001207AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1806C289642BB001207AF /* OpenGL.framework */; platformFilter = maccatalyst; };
 		B3D18070289642C2001207AF /* PVSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1806F289642C2001207AF /* PVSupport.framework */; };
-		B3D18074289642D1001207AF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D18073289642D0001207AF /* UIKit.framework */; };
-		B3D18076289642D7001207AF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D18075289642D7001207AF /* OpenGLES.framework */; };
-		B3D18078289642E6001207AF /* PVSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D18077289642E6001207AF /* PVSupport.framework */; };
-		B3D1807B2896430B001207AF /* libfreedo-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1801628963F5C001207AF /* libfreedo-iOS.a */; };
-		B3D1807E2896430B001207AF /* liblibcue-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC271582D4F000EAC45A /* liblibcue-iOS.a */; };
-		B3D1808128964313001207AF /* libfreedo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1804028963F86001207AF /* libfreedo-tvOS.a */; };
-		B3D1808428964313001207AF /* liblibcue-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1805B28964039001207AF /* liblibcue-tvOS.a */; };
+		B3D1807B2896430B001207AF /* libfreedo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1801628963F5C001207AF /* libfreedo.a */; };
+		B3D1807E2896430B001207AF /* liblibcue.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC271582D4F000EAC45A /* liblibcue.a */; };
 		B3D1808728964341001207AF /* FreeDOGameCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B3D1808828964341001207AF /* FreeDOGameCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */; };
 		B3D1808D289643C5001207AF /* Core.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3D1808C289643C4001207AF /* Core.plist */; };
-		B3D1808E289643C5001207AF /* Core.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3D1808C289643C4001207AF /* Core.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,33 +53,10 @@
 			remoteGlobalIDString = 575ACC261582D4F000EAC45A;
 			remoteInfo = "libcue-iOS";
 		};
-		B3D1808228964313001207AF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B3D1802C28963F86001207AF;
-			remoteInfo = "freedo-tvOS";
-		};
-		B3D1808528964314001207AF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B3D1804E28964039001207AF;
-			remoteInfo = "libcue-tvOS";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		B3D1801428963F5C001207AF /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3D1803C28963F86001207AF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/$(PRODUCT_NAME)";
@@ -138,7 +87,7 @@
 		575ACBF91582C37400EAC45A /* time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = time.c; sourceTree = "<group>"; };
 		575ACBFA1582C37400EAC45A /* time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
 		575ACC0E1582C3A100EAC45A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = "libcue-1.4.0/config.h"; sourceTree = SOURCE_ROOT; };
-		575ACC271582D4F000EAC45A /* liblibcue-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibcue-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		575ACC271582D4F000EAC45A /* liblibcue.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibcue.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		578D12271582B03E003F64E5 /* _3do_sys.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _3do_sys.cpp; sourceTree = "<group>"; };
 		578D12281582B03E003F64E5 /* arm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = arm.cpp; sourceTree = "<group>"; };
 		578D12291582B03E003F64E5 /* arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = arm.h; sourceTree = "<group>"; };
@@ -172,13 +121,10 @@
 		942597C415146FF40074E3A3 /* OpenEmuBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenEmuBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94551A0E19A570170080929A /* frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = frame.cpp; sourceTree = "<group>"; };
 		94551A0F19A570170080929A /* frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frame.h; sourceTree = "<group>"; };
-		B3D1801628963F5C001207AF /* libfreedo-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libfreedo-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3D1804028963F86001207AF /* libfreedo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libfreedo-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3D1801628963F5C001207AF /* libfreedo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfreedo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D1804628963FEF001207AF /* FreeDO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FreeDO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D1804828963FF0001207AF /* FreeDO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FreeDO.h; sourceTree = "<group>"; };
-		B3D1805B28964039001207AF /* liblibcue-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibcue-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D1805C289640D2001207AF /* BuildFlags.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BuildFlags.xcconfig; sourceTree = "<group>"; };
-		B3D1806728964172001207AF /* FreeDO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FreeDO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D18069289642B4001207AF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B3D1806B289642BB001207AF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
 		B3D1806C289642BB001207AF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -205,42 +151,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3D1803B28963F86001207AF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B3D1804328963FEF001207AF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				B3D1806A289642B4001207AF /* UIKit.framework in Frameworks */,
-				B3D1807B2896430B001207AF /* libfreedo-iOS.a in Frameworks */,
+				B3D1807B2896430B001207AF /* libfreedo.a in Frameworks */,
 				B3D1806D289642BB001207AF /* OpenGLES.framework in Frameworks */,
 				B3D18070289642C2001207AF /* PVSupport.framework in Frameworks */,
 				B3D1806E289642BB001207AF /* OpenGL.framework in Frameworks */,
-				B3D1807E2896430B001207AF /* liblibcue-iOS.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3D1805628964039001207AF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3D1806228964172001207AF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3D1808128964313001207AF /* libfreedo-tvOS.a in Frameworks */,
-				B3D1808428964313001207AF /* liblibcue-tvOS.a in Frameworks */,
-				B3D18078289642E6001207AF /* PVSupport.framework in Frameworks */,
-				B3D18074289642D1001207AF /* UIKit.framework in Frameworks */,
-				B3D18076289642D7001207AF /* OpenGLES.framework in Frameworks */,
+				B3D1807E2896430B001207AF /* liblibcue.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,12 +235,9 @@
 		19C28FB8FE9D52D311CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				575ACC271582D4F000EAC45A /* liblibcue-iOS.a */,
-				B3D1801628963F5C001207AF /* libfreedo-iOS.a */,
-				B3D1804028963F86001207AF /* libfreedo-tvOS.a */,
+				575ACC271582D4F000EAC45A /* liblibcue.a */,
+				B3D1801628963F5C001207AF /* libfreedo.a */,
 				B3D1804628963FEF001207AF /* FreeDO.framework */,
-				B3D1805B28964039001207AF /* liblibcue-tvOS.a */,
-				B3D1806728964172001207AF /* FreeDO.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -424,28 +341,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3D1805728964039001207AF /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3D1805E28964172001207AF /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3D1808828964341001207AF /* FreeDOGameCore.h in Headers */,
-				B3D1805F28964172001207AF /* FreeDO.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		575ACC261582D4F000EAC45A /* libcue-iOS */ = {
+		575ACC261582D4F000EAC45A /* libcue */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 575ACC281582D4F000EAC45A /* Build configuration list for PBXNativeTarget "libcue-iOS" */;
+			buildConfigurationList = 575ACC281582D4F000EAC45A /* Build configuration list for PBXNativeTarget "libcue" */;
 			buildPhases = (
 				575ACC231582D4F000EAC45A /* Sources */,
 				575ACC241582D4F000EAC45A /* Frameworks */,
@@ -455,14 +356,14 @@
 			);
 			dependencies = (
 			);
-			name = "libcue-iOS";
+			name = libcue;
 			productName = libcue;
-			productReference = 575ACC271582D4F000EAC45A /* liblibcue-iOS.a */;
+			productReference = 575ACC271582D4F000EAC45A /* liblibcue.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		B3D1801528963F5C001207AF /* freedo-iOS */ = {
+		B3D1801528963F5C001207AF /* freedo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B3D1801E28963F5D001207AF /* Build configuration list for PBXNativeTarget "freedo-iOS" */;
+			buildConfigurationList = B3D1801E28963F5D001207AF /* Build configuration list for PBXNativeTarget "freedo" */;
 			buildPhases = (
 				B3D1801228963F5C001207AF /* Sources */,
 				B3D1801328963F5C001207AF /* Frameworks */,
@@ -472,31 +373,14 @@
 			);
 			dependencies = (
 			);
-			name = "freedo-iOS";
+			name = freedo;
 			productName = freedo;
-			productReference = B3D1801628963F5C001207AF /* libfreedo-iOS.a */;
+			productReference = B3D1801628963F5C001207AF /* libfreedo.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		B3D1802C28963F86001207AF /* freedo-tvOS */ = {
+		B3D1804528963FEF001207AF /* FreeDO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B3D1803D28963F86001207AF /* Build configuration list for PBXNativeTarget "freedo-tvOS" */;
-			buildPhases = (
-				B3D1802D28963F86001207AF /* Sources */,
-				B3D1803B28963F86001207AF /* Frameworks */,
-				B3D1803C28963F86001207AF /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "freedo-tvOS";
-			productName = freedo;
-			productReference = B3D1804028963F86001207AF /* libfreedo-tvOS.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		B3D1804528963FEF001207AF /* FreeDO-iOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "FreeDO-iOS" */;
+			buildConfigurationList = B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "FreeDO" */;
 			buildPhases = (
 				B3D1804128963FEF001207AF /* Headers */,
 				B3D1804228963FEF001207AF /* Sources */,
@@ -509,46 +393,9 @@
 				B3D1807D2896430B001207AF /* PBXTargetDependency */,
 				B3D180802896430C001207AF /* PBXTargetDependency */,
 			);
-			name = "FreeDO-iOS";
+			name = FreeDO;
 			productName = FreeDO;
 			productReference = B3D1804628963FEF001207AF /* FreeDO.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		B3D1804E28964039001207AF /* libcue-tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B3D1805828964039001207AF /* Build configuration list for PBXNativeTarget "libcue-tvOS" */;
-			buildPhases = (
-				B3D1804F28964039001207AF /* Sources */,
-				B3D1805628964039001207AF /* Frameworks */,
-				B3D1805728964039001207AF /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "libcue-tvOS";
-			productName = libcue;
-			productReference = B3D1805B28964039001207AF /* liblibcue-tvOS.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		B3D1805D28964172001207AF /* FreeDO-tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B3D1806428964172001207AF /* Build configuration list for PBXNativeTarget "FreeDO-tvOS" */;
-			buildPhases = (
-				B3D1805E28964172001207AF /* Headers */,
-				B3D1806028964172001207AF /* Sources */,
-				B3D1806228964172001207AF /* Frameworks */,
-				B3D1806328964172001207AF /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B3D1808328964313001207AF /* PBXTargetDependency */,
-				B3D1808628964314001207AF /* PBXTargetDependency */,
-			);
-			name = "FreeDO-tvOS";
-			productName = FreeDO;
-			productReference = B3D1806728964172001207AF /* FreeDO.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -578,12 +425,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B3D1804528963FEF001207AF /* FreeDO-iOS */,
-				B3D1805D28964172001207AF /* FreeDO-tvOS */,
-				575ACC261582D4F000EAC45A /* libcue-iOS */,
-				B3D1804E28964039001207AF /* libcue-tvOS */,
-				B3D1801528963F5C001207AF /* freedo-iOS */,
-				B3D1802C28963F86001207AF /* freedo-tvOS */,
+				B3D1804528963FEF001207AF /* FreeDO */,
+				575ACC261582D4F000EAC45A /* libcue */,
+				B3D1801528963F5C001207AF /* freedo */,
 			);
 		};
 /* End PBXProject section */
@@ -594,14 +438,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3D1808D289643C5001207AF /* Core.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3D1806328964172001207AF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3D1808E289643C5001207AF /* Core.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,26 +477,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3D1802D28963F86001207AF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3D1802E28963F86001207AF /* vdlp.cpp in Sources */,
-				B3D1802F28963F86001207AF /* Clio.cpp in Sources */,
-				B3D1803028963F86001207AF /* bitop.cpp in Sources */,
-				B3D1803128963F86001207AF /* Madam.cpp in Sources */,
-				B3D1803228963F86001207AF /* frame.cpp in Sources */,
-				B3D1803328963F86001207AF /* arm.cpp in Sources */,
-				B3D1803428963F86001207AF /* Iso.cpp in Sources */,
-				B3D1803528963F86001207AF /* SPORT.cpp in Sources */,
-				B3D1803628963F86001207AF /* DiagPort.cpp in Sources */,
-				B3D1803728963F86001207AF /* DSP.cpp in Sources */,
-				B3D1803828963F86001207AF /* XBUS.cpp in Sources */,
-				B3D1803928963F86001207AF /* _3do_sys.cpp in Sources */,
-				B3D1803A28963F86001207AF /* quarz.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B3D1804228963FEF001207AF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -669,49 +485,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3D1804F28964039001207AF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3D1805028964039001207AF /* cd.c in Sources */,
-				B3D1805128964039001207AF /* cdtext.c in Sources */,
-				B3D1805228964039001207AF /* cue_parser.ym in Sources */,
-				B3D1805328964039001207AF /* cue_scanner.lm in Sources */,
-				B3D1805428964039001207AF /* rem.c in Sources */,
-				B3D1805528964039001207AF /* time.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3D1806028964172001207AF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3D1806128964172001207AF /* FreeDOGameCore.mm in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		B3D1807D2896430B001207AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B3D1801528963F5C001207AF /* freedo-iOS */;
+			target = B3D1801528963F5C001207AF /* freedo */;
 			targetProxy = B3D1807C2896430B001207AF /* PBXContainerItemProxy */;
 		};
 		B3D180802896430C001207AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 575ACC261582D4F000EAC45A /* libcue-iOS */;
+			target = 575ACC261582D4F000EAC45A /* libcue */;
 			targetProxy = B3D1807F2896430C001207AF /* PBXContainerItemProxy */;
-		};
-		B3D1808328964313001207AF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B3D1802C28963F86001207AF /* freedo-tvOS */;
-			targetProxy = B3D1808228964313001207AF /* PBXContainerItemProxy */;
-		};
-		B3D1808628964314001207AF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B3D1804E28964039001207AF /* libcue-tvOS */;
-			targetProxy = B3D1808528964314001207AF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -844,6 +629,7 @@
 		575ACC291582D4F000EAC45A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
@@ -861,12 +647,15 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
 		};
 		575ACC2A1582D4F000EAC45A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
@@ -877,12 +666,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
 		};
 		B3D1801C28963F5D001207AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -922,6 +714,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -929,6 +723,7 @@
 		B3D1801D28963F5D001207AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -963,95 +758,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		B3D1803E28963F86001207AF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = S32Z3HMYVQ;
-				ENABLE_BITCODE = NO;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 3;
-			};
-			name = Debug;
-		};
-		B3D1803F28963F86001207AF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = S32Z3HMYVQ;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 3;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1059,6 +768,7 @@
 		B3D1804B28963FF0001207AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1117,6 +827,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1127,6 +839,7 @@
 		B3D1804C28963FF0001207AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1180,171 +893,10 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		B3D1805928964039001207AF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				ENABLE_BITCODE = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-			};
-			name = Debug;
-		};
-		B3D1805A28964039001207AF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				ENABLE_BITCODE = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-			};
-			name = Release;
-		};
-		B3D1806528964172001207AF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.provenance-emu.FreeDO";
-				PRODUCT_NAME = FreeDO;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = appletvos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = 3;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		B3D1806628964172001207AF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.provenance-emu.FreeDO";
-				PRODUCT_NAME = FreeDO;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = appletvos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = 3;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1363,7 +915,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		575ACC281582D4F000EAC45A /* Build configuration list for PBXNativeTarget "libcue-iOS" */ = {
+		575ACC281582D4F000EAC45A /* Build configuration list for PBXNativeTarget "libcue" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				575ACC291582D4F000EAC45A /* Debug */,
@@ -1372,7 +924,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B3D1801E28963F5D001207AF /* Build configuration list for PBXNativeTarget "freedo-iOS" */ = {
+		B3D1801E28963F5D001207AF /* Build configuration list for PBXNativeTarget "freedo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B3D1801C28963F5D001207AF /* Debug */,
@@ -1381,38 +933,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B3D1803D28963F86001207AF /* Build configuration list for PBXNativeTarget "freedo-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B3D1803E28963F86001207AF /* Debug */,
-				B3D1803F28963F86001207AF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "FreeDO-iOS" */ = {
+		B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "FreeDO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B3D1804B28963FF0001207AF /* Debug */,
 				B3D1804C28963FF0001207AF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B3D1805828964039001207AF /* Build configuration list for PBXNativeTarget "libcue-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B3D1805928964039001207AF /* Debug */,
-				B3D1805A28964039001207AF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B3D1806428964172001207AF /* Build configuration list for PBXNativeTarget "FreeDO-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B3D1806528964172001207AF /* Debug */,
-				B3D1806628964172001207AF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
