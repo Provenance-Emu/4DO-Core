@@ -295,6 +295,10 @@ static void writeSaveFile(const char* path)
     [self loadBIOSes];
     [self initVideo];
     
+    videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+    videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+    videoBuffer = videoBufferA;
+    
     memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
     
     _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
@@ -467,12 +471,15 @@ static void writeSaveFile(const char* path)
 }
 
 -(BOOL)isDoubleBuffered {
-    return YES;
+    return NO;
 }
-
 
 - (CGRect)screenRect {
     return CGRectMake(0, 0, videoWidth, videoHeight);
+}
+
+- (CGSize)aspectSize {
+    return CGSizeMake(videoWidth, videoHeight);
 }
 
 - (CGSize)bufferSize {
@@ -483,9 +490,17 @@ static void writeSaveFile(const char* path)
     return GL_BGRA;
 }
 
+- (GLenum)internalPixelFormat {
+    return GL_BGRA;
+}
+
 - (GLenum)pixelType {
-    return GL_UNSIGNED_INT;
+    return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
 //    return GL_UNSIGNED_INT_8_8_8_8_REV;
+}
+
+- (const void *)videoBuffer {
+    return [self getVideoBufferWithHint:nil];
 }
 
 #pragma mark - Audio
