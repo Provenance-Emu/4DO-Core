@@ -3,12 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>PVCoreIdentifier</key>
-	<string>com.provenance.FreeDO</string>
+	<string>com.provenance.core.FreeDO</string>
 	<key>PVPrincipleClass</key>
 	<string>PVFreeDOGameCore</string>
 	<key>PVSupportedSystems</key>
 	<array>
-		<string>com.provenance.3do</string>
+		<string>com.provenance.3DO</string>
 	</array>
 	<key>PVProjectName</key>
 	<string>4DO/FreeDO</string>
