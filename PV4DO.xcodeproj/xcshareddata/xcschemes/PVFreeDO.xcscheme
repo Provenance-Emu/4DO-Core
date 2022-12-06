@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3D1804528963FEF001207AF"
-               BuildableName = "FreeDO.framework"
-               BlueprintName = "FreeDO"
+               BuildableName = "PVFreeDO.framework"
+               BlueprintName = "PVFreeDO"
                ReferencedContainer = "container:PV4DO.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3D1804528963FEF001207AF"
-            BuildableName = "FreeDO.framework"
-            BlueprintName = "FreeDO"
+            BuildableName = "PVFreeDO.framework"
+            BlueprintName = "PVFreeDO"
             ReferencedContainer = "container:PV4DO.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

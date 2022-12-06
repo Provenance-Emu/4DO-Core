@@ -122,7 +122,7 @@
 		94551A0E19A570170080929A /* frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = frame.cpp; sourceTree = "<group>"; };
 		94551A0F19A570170080929A /* frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frame.h; sourceTree = "<group>"; };
 		B3D1801628963F5C001207AF /* libfreedo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfreedo.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3D1804628963FEF001207AF /* FreeDO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FreeDO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3D1804628963FEF001207AF /* PVFreeDO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PVFreeDO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D1804828963FF0001207AF /* FreeDO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FreeDO.h; sourceTree = "<group>"; };
 		B3D1805C289640D2001207AF /* BuildFlags.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BuildFlags.xcconfig; sourceTree = "<group>"; };
 		B3D18069289642B4001207AF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -237,7 +237,7 @@
 			children = (
 				575ACC271582D4F000EAC45A /* liblibcue.a */,
 				B3D1801628963F5C001207AF /* libfreedo.a */,
-				B3D1804628963FEF001207AF /* FreeDO.framework */,
+				B3D1804628963FEF001207AF /* PVFreeDO.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -245,21 +245,21 @@
 		575ACBE01582C37400EAC45A /* libcue */ = {
 			isa = PBXGroup;
 			children = (
-				575ACC0E1582C3A100EAC45A /* config.h */,
 				575ACBE81582C37400EAC45A /* cd.c */,
-				575ACBE91582C37400EAC45A /* cd.h */,
 				575ACBEA1582C37400EAC45A /* cdtext.c */,
-				575ACBEB1582C37400EAC45A /* cdtext.h */,
 				575ACBEC1582C37400EAC45A /* cue_parser.c */,
-				575ACBED1582C37400EAC45A /* cue_parser.h */,
-				575ACBEE1582C37400EAC45A /* cue_parser.ym */,
 				575ACBEF1582C37400EAC45A /* cue_scanner.c */,
-				575ACBF01582C37400EAC45A /* cue_scanner.lm */,
-				575ACBF11582C37400EAC45A /* libcue.h */,
 				575ACBF71582C37400EAC45A /* rem.c */,
-				575ACBF81582C37400EAC45A /* rem.h */,
 				575ACBF91582C37400EAC45A /* time.c */,
+				575ACBE91582C37400EAC45A /* cd.h */,
+				575ACBEB1582C37400EAC45A /* cdtext.h */,
+				575ACC0E1582C3A100EAC45A /* config.h */,
+				575ACBED1582C37400EAC45A /* cue_parser.h */,
+				575ACBF11582C37400EAC45A /* libcue.h */,
+				575ACBF81582C37400EAC45A /* rem.h */,
 				575ACBFA1582C37400EAC45A /* time.h */,
+				575ACBF01582C37400EAC45A /* cue_scanner.lm */,
+				575ACBEE1582C37400EAC45A /* cue_parser.ym */,
 			);
 			name = libcue;
 			path = "libcue-1.4.0/src/libcue";
@@ -270,31 +270,31 @@
 			children = (
 				578D12271582B03E003F64E5 /* _3do_sys.cpp */,
 				578D12281582B03E003F64E5 /* arm.cpp */,
-				578D12291582B03E003F64E5 /* arm.h */,
 				578D122A1582B03E003F64E5 /* bitop.cpp */,
-				578D122B1582B03E003F64E5 /* bitop.h */,
 				578D122C1582B03E003F64E5 /* Clio.cpp */,
-				578D122D1582B03E003F64E5 /* Clio.h */,
 				578D122E1582B03E003F64E5 /* DiagPort.cpp */,
-				578D122F1582B03E003F64E5 /* DiagPort.h */,
 				578D12301582B03E003F64E5 /* DSP.cpp */,
-				578D12311582B03E003F64E5 /* DSP.h */,
 				94551A0E19A570170080929A /* frame.cpp */,
+				578D12341582B03F003F64E5 /* Iso.cpp */,
+				578D12371582B03F003F64E5 /* Madam.cpp */,
+				578D123A1582B03F003F64E5 /* quarz.cpp */,
+				578D123C1582B03F003F64E5 /* SPORT.cpp */,
+				578D123F1582B03F003F64E5 /* vdlp.cpp */,
+				578D12411582B03F003F64E5 /* XBUS.cpp */,
+				578D12291582B03E003F64E5 /* arm.h */,
+				578D122B1582B03E003F64E5 /* bitop.h */,
+				578D122D1582B03E003F64E5 /* Clio.h */,
+				578D122F1582B03E003F64E5 /* DiagPort.h */,
+				578D12311582B03E003F64E5 /* DSP.h */,
 				94551A0F19A570170080929A /* frame.h */,
 				578D12321582B03E003F64E5 /* freedoconfig.h */,
 				578D12331582B03F003F64E5 /* freedocore.h */,
-				578D12341582B03F003F64E5 /* Iso.cpp */,
 				578D12351582B03F003F64E5 /* IsoXBUS.h */,
-				578D12371582B03F003F64E5 /* Madam.cpp */,
 				578D12381582B03F003F64E5 /* Madam.h */,
-				578D123A1582B03F003F64E5 /* quarz.cpp */,
 				578D123B1582B03F003F64E5 /* quarz.h */,
-				578D123C1582B03F003F64E5 /* SPORT.cpp */,
 				578D123D1582B03F003F64E5 /* SPORT.h */,
 				578D123E1582B03F003F64E5 /* types.h */,
-				578D123F1582B03F003F64E5 /* vdlp.cpp */,
 				578D12401582B03F003F64E5 /* vdlp.h */,
-				578D12411582B03F003F64E5 /* XBUS.cpp */,
 				578D12421582B03F003F64E5 /* XBUS.h */,
 			);
 			path = libfreedo;
@@ -378,9 +378,9 @@
 			productReference = B3D1801628963F5C001207AF /* libfreedo.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		B3D1804528963FEF001207AF /* FreeDO */ = {
+		B3D1804528963FEF001207AF /* PVFreeDO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "FreeDO" */;
+			buildConfigurationList = B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "PVFreeDO" */;
 			buildPhases = (
 				B3D1804128963FEF001207AF /* Headers */,
 				B3D1804228963FEF001207AF /* Sources */,
@@ -393,9 +393,9 @@
 				B3D1807D2896430B001207AF /* PBXTargetDependency */,
 				B3D180802896430C001207AF /* PBXTargetDependency */,
 			);
-			name = FreeDO;
+			name = PVFreeDO;
 			productName = FreeDO;
-			productReference = B3D1804628963FEF001207AF /* FreeDO.framework */;
+			productReference = B3D1804628963FEF001207AF /* PVFreeDO.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -425,7 +425,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B3D1804528963FEF001207AF /* FreeDO */,
+				B3D1804528963FEF001207AF /* PVFreeDO */,
 				575ACC261582D4F000EAC45A /* libcue */,
 				B3D1801528963F5C001207AF /* freedo */,
 			);
@@ -823,7 +823,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.provenance-emu.FreeDO";
-				PRODUCT_NAME = FreeDO;
+				PRODUCT_NAME = PVFreeDO;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -889,7 +889,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.provenance-emu.FreeDO";
-				PRODUCT_NAME = FreeDO;
+				PRODUCT_NAME = PVFreeDO;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -933,7 +933,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "FreeDO" */ = {
+		B3D1804A28963FF0001207AF /* Build configuration list for PBXNativeTarget "PVFreeDO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B3D1804B28963FF0001207AF /* Debug */,
