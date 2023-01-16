@@ -62,6 +62,6 @@ unsigned char nvramhead[]=
     0,0,0,0x84,0,0,0x76,0x68,0,0,0,0x14
 };
 
-__attribute__((visibility("default")))
+PVCORE_DIRECT_MEMBERS
 @interface PVFreeDOGameCore : PVEmulatorCore <PV3DOSystemResponderClient>
 @end
