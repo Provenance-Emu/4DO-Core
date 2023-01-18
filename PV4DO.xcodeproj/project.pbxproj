@@ -11,6 +11,7 @@
 		575ACC2E1582D50400EAC45A /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
 		575ACC331582D50400EAC45A /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF71582C37400EAC45A /* rem.c */; };
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
+		B3AFCF5A2977A66600A01010 /* PVLogging in Frameworks */ = {isa = PBXBuildFile; productRef = B3AFCF592977A66600A01010 /* PVLogging */; };
 		B3D1801F28963F7D001207AF /* quarz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123A1582B03F003F64E5 /* quarz.cpp */; };
 		B3D1802028963F7D001207AF /* Madam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12371582B03F003F64E5 /* Madam.cpp */; };
 		B3D1802128963F7D001207AF /* _3do_sys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12271582B03E003F64E5 /* _3do_sys.cpp */; };
@@ -154,6 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3AFCF5A2977A66600A01010 /* PVLogging in Frameworks */,
 				B3D1807B2896430B001207AF /* libfreedo.a in Frameworks */,
 				B3D1806D289642BB001207AF /* OpenGLES.framework in Frameworks */,
 				B3D18070289642C2001207AF /* PVSupport.framework in Frameworks */,
@@ -392,6 +394,9 @@
 				B3D180802896430C001207AF /* PBXTargetDependency */,
 			);
 			name = PVFreeDO;
+			packageProductDependencies = (
+				B3AFCF592977A66600A01010 /* PVLogging */,
+			);
 			productName = FreeDO;
 			productReference = B3D1804628963FEF001207AF /* PVFreeDO.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1110,6 +1115,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B3AFCF592977A66600A01010 /* PVLogging */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PVLogging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
 }
