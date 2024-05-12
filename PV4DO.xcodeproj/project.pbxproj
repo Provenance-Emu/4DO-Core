@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -408,6 +408,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Provenance EMU";
 				TargetAttributes = {
 					B3D1801528963F5C001207AF = {
 						CreatedOnToolsVersion = 14.0;
@@ -418,13 +419,14 @@
 				};
 			};
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "PV4DO" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* BSNES */;
+			minimizedProjectReferenceProxies = 1;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
