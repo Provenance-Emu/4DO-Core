@@ -11,6 +11,9 @@
 		575ACC2E1582D50400EAC45A /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
 		575ACC331582D50400EAC45A /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF71582C37400EAC45A /* rem.c */; };
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
+		B37C00682BFF6A8D00FEC6AC /* PVSupport in Frameworks */ = {isa = PBXBuildFile; productRef = B37C00672BFF6A8D00FEC6AC /* PVSupport */; };
+		B37C006A2BFF6ACB00FEC6AC /* FreeDOGameCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37C00692BFF6ACB00FEC6AC /* FreeDOGameCore.swift */; };
+		B37C00732BFF730600FEC6AC /* PVEmulatorCore in Frameworks */ = {isa = PBXBuildFile; productRef = B37C00722BFF730600FEC6AC /* PVEmulatorCore */; };
 		B3AFCF5A2977A66600A01010 /* PVLogging in Frameworks */ = {isa = PBXBuildFile; productRef = B3AFCF592977A66600A01010 /* PVLogging */; };
 		B3D1801F28963F7D001207AF /* quarz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123A1582B03F003F64E5 /* quarz.cpp */; };
 		B3D1802028963F7D001207AF /* Madam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12371582B03F003F64E5 /* Madam.cpp */; };
@@ -29,7 +32,6 @@
 		B3D1804D28964018001207AF /* FreeDOGameCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */; };
 		B3D1806D289642BB001207AF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1806B289642BB001207AF /* OpenGLES.framework */; platformFilters = (ios, tvos, watchos, ); };
 		B3D1806E289642BB001207AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1806C289642BB001207AF /* OpenGL.framework */; platformFilters = (maccatalyst, macos, ); };
-		B3D18070289642C2001207AF /* PVSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1806F289642C2001207AF /* PVSupport.framework */; };
 		B3D1807B2896430B001207AF /* libfreedo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3D1801628963F5C001207AF /* libfreedo.a */; };
 		B3D1807E2896430B001207AF /* liblibcue.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC271582D4F000EAC45A /* liblibcue.a */; };
 		B3D1808728964341001207AF /* FreeDOGameCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -56,6 +58,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		B37C00712BFF6F3500FEC6AC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B3D1801428963F5C001207AF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,6 +133,7 @@
 		942597C415146FF40074E3A3 /* OpenEmuBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenEmuBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94551A0E19A570170080929A /* frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = frame.cpp; sourceTree = "<group>"; };
 		94551A0F19A570170080929A /* frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frame.h; sourceTree = "<group>"; };
+		B37C00692BFF6ACB00FEC6AC /* FreeDOGameCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeDOGameCore.swift; sourceTree = "<group>"; };
 		B3D1801628963F5C001207AF /* libfreedo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfreedo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D1804628963FEF001207AF /* PVFreeDO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PVFreeDO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D1804828963FF0001207AF /* FreeDO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FreeDO.h; sourceTree = "<group>"; };
@@ -155,10 +168,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B37C00682BFF6A8D00FEC6AC /* PVSupport in Frameworks */,
+				B37C00732BFF730600FEC6AC /* PVEmulatorCore in Frameworks */,
 				B3AFCF5A2977A66600A01010 /* PVLogging in Frameworks */,
 				B3D1807B2896430B001207AF /* libfreedo.a in Frameworks */,
 				B3D1806D289642BB001207AF /* OpenGLES.framework in Frameworks */,
-				B3D18070289642C2001207AF /* PVSupport.framework in Frameworks */,
 				B3D1806E289642BB001207AF /* OpenGL.framework in Frameworks */,
 				B3D1807E2896430B001207AF /* liblibcue.a in Frameworks */,
 			);
@@ -208,6 +222,7 @@
 				578D12261582B03E003F64E5 /* libfreedo */,
 				826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */,
 				826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */,
+				B37C00692BFF6ACB00FEC6AC /* FreeDOGameCore.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -386,6 +401,7 @@
 				B3D1804228963FEF001207AF /* Sources */,
 				B3D1804328963FEF001207AF /* Frameworks */,
 				B3D1804428963FEF001207AF /* Resources */,
+				B37C00712BFF6F3500FEC6AC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -396,6 +412,8 @@
 			name = PVFreeDO;
 			packageProductDependencies = (
 				B3AFCF592977A66600A01010 /* PVLogging */,
+				B37C00672BFF6A8D00FEC6AC /* PVSupport */,
+				B37C00722BFF730600FEC6AC /* PVEmulatorCore */,
 			);
 			productName = FreeDO;
 			productReference = B3D1804628963FEF001207AF /* PVFreeDO.framework */;
@@ -415,6 +433,7 @@
 					};
 					B3D1804528963FEF001207AF = {
 						CreatedOnToolsVersion = 14.0;
+						LastSwiftMigration = 1540;
 					};
 				};
 			};
@@ -427,6 +446,10 @@
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* BSNES */;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B37C00662BFF6A8D00FEC6AC /* XCLocalSwiftPackageReference "../../PVSupport" */,
+				B37C006B2BFF6BFF00FEC6AC /* XCLocalSwiftPackageReference "../../PVEmulatorCore" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -487,6 +510,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3D1804D28964018001207AF /* FreeDOGameCore.mm in Sources */,
+				B37C006A2BFF6ACB00FEC6AC /* FreeDOGameCore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,7 +547,7 @@
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -538,7 +562,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -567,6 +591,8 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USER_HEADER_SEARCH_PATHS = (
 					"\"$(PROJECT_DIR)/core/\"",
@@ -582,7 +608,7 @@
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -596,7 +622,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -624,6 +650,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USER_HEADER_SEARCH_PATHS = (
 					"\"$(PROJECT_DIR)/core/\"",
@@ -679,7 +706,7 @@
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -693,7 +720,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -721,6 +748,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USER_HEADER_SEARCH_PATHS = (
 					"\"$(PROJECT_DIR)/core/\"",
@@ -736,6 +764,7 @@
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -788,7 +817,9 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,4,6";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -934,6 +965,7 @@
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -991,6 +1023,8 @@
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,4,6";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1003,6 +1037,7 @@
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -1055,7 +1090,9 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,4,6";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1108,7 +1145,27 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		B37C00662BFF6A8D00FEC6AC /* XCLocalSwiftPackageReference "../../PVSupport" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../PVSupport;
+		};
+		B37C006B2BFF6BFF00FEC6AC /* XCLocalSwiftPackageReference "../../PVEmulatorCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../PVEmulatorCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		B37C00672BFF6A8D00FEC6AC /* PVSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PVSupport;
+		};
+		B37C00722BFF730600FEC6AC /* PVEmulatorCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B37C006B2BFF6BFF00FEC6AC /* XCLocalSwiftPackageReference "../../PVEmulatorCore" */;
+			productName = PVEmulatorCore;
+		};
 		B3AFCF592977A66600A01010 /* PVLogging */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PVLogging;

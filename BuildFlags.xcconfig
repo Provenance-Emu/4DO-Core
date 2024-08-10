@@ -9,9 +9,9 @@
 // All
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) __LIBRETRO__=1
 // PROFILE_PERFORMANCE=1
-//OTHER_CFLAGS = $(inherited)
+OTHER_CFLAGS = $(inherited) -fmodules -fcxx-modules
 OTHER_LDFLAGS = $(inherited) -ObjC -Wl,-all_load -all_load
-// OTHER_CPLUSPLUSFLAGS = $(OTHER_CFLAGS) -g
+ OTHER_CPLUSPLUSFLAGS = $(OTHER_CFLAGS) -g
 
     // Device
 GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(inherited) TARGET_IPHONE=1

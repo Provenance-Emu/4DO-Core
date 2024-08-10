@@ -26,8 +26,6 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <PVSupport/PVSupport.h>
-#import <PVSupport/PVSupport-Swift.h>
 
 struct VolumeHeader             // 132 bytes
 {
@@ -62,6 +60,7 @@ unsigned char nvramhead[]=
     0,0,0,0x84,0,0,0x76,0x68,0,0,0,0x14
 };
 
-PVCORE_DIRECT_MEMBERS
-@interface PVFreeDOGameCore : PVEmulatorCore <PV3DOSystemResponderClient>
-@end
+//#import <PVFreeDO/PVFreeDO-Swift.h>
+//
+//@interface PVFreeDOGameCore (ObjC) <PV3DOSystemResponderClient>
+//@end
