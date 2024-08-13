@@ -771,7 +771,7 @@ char CalculateDeviceHighByte(int deviceNumber)
     memcpy(self.biosRom1Copy, [data bytes], len);
 
     //there's supposed to be a 3rd BIOS here, so add that later
-    
+
     // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for soem JAP games. We still have to init the memory tho
     NSString *rom2Path = [[self BIOSPath] stringByAppendingPathComponent:@"rom2.rom"];
     data = [NSData dataWithContentsOfFile:rom2Path];
