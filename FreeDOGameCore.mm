@@ -495,8 +495,7 @@ static void writeSaveFile(const char* path)
 }
 
 - (GLenum)pixelType {
-    return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
-//    return GL_UNSIGNED_INT_8_8_8_8_REV;
+    return GL_UNSIGNED_BYTE;
 }
 
 - (const void *)videoBuffer {
@@ -541,6 +540,52 @@ static void writeSaveFile(const char* path)
 }
 
 #pragma mark - Input
+
+- (void)updateControllers
+{
+    if ([self.controller1 extendedGamepad])
+    {
+        GCExtendedGamepad *gamepad = [self.controller1 extendedGamepad];
+        GCControllerDirectionPad *dpad = [gamepad dpad];
+    
+        (dpad.up.isPressed || gamepad.leftThumbstick.up.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONUP : internal_input_state[0].buttons&=~INPUTBUTTONUP;
+        (dpad.down.isPressed || gamepad.leftThumbstick.down.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONDOWN : internal_input_state[0].buttons&=~INPUTBUTTONDOWN;
+        (dpad.left.isPressed || gamepad.leftThumbstick.left.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONLEFT : internal_input_state[0].buttons&=~INPUTBUTTONLEFT;
+        (dpad.right.isPressed || gamepad.leftThumbstick.right.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONRIGHT : internal_input_state[0].buttons&=~INPUTBUTTONRIGHT;
+
+        (gamepad.buttonA.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONA : internal_input_state[0].buttons&=~INPUTBUTTONA;
+        (gamepad.buttonB.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONB : internal_input_state[0].buttons&=~INPUTBUTTONB;
+        (gamepad.buttonY.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONC : internal_input_state[0].buttons&=~INPUTBUTTONC;
+
+        (gamepad.leftShoulder.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONL : internal_input_state[0].buttons&=~INPUTBUTTONL;
+        (gamepad.rightShoulder.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONR : internal_input_state[0].buttons&=~INPUTBUTTONR;
+        
+        (gamepad.leftTrigger.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONX : internal_input_state[0].buttons&=~INPUTBUTTONX;
+        (gamepad.rightTrigger.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONP : internal_input_state[0].buttons&=~INPUTBUTTONP;
+        
+    }
+    else if ([self.controller1 gamepad])
+    {
+        GCGamepad *gamepad = [self.controller1 gamepad];
+        GCControllerDirectionPad *dpad = [gamepad dpad];
+
+        (dpad.up.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONUP : internal_input_state[0].buttons&=~INPUTBUTTONP;
+        (dpad.down.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONDOWN : internal_input_state[0].buttons&=~INPUTBUTTONDOWN;
+        (dpad.left.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONLEFT : internal_input_state[0].buttons&=~INPUTBUTTONLEFT;
+        (dpad.right.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONRIGHT : internal_input_state[0].buttons&=~INPUTBUTTONRIGHT;
+
+        (gamepad.buttonA.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONA : internal_input_state[0].buttons&=~INPUTBUTTONA;
+        (gamepad.buttonB.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONB : internal_input_state[0].buttons&=~INPUTBUTTONB;
+        (gamepad.buttonY.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONC : internal_input_state[0].buttons&=~INPUTBUTTONC;
+
+        (gamepad.leftShoulder.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONL : internal_input_state[0].buttons&=~INPUTBUTTONL;
+        (gamepad.rightShoulder.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONR : internal_input_state[0].buttons&=~INPUTBUTTONR;
+        
+        (gamepad.buttonX.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONX : internal_input_state[0].buttons&=~INPUTBUTTONX;
+        //nothing to assign to P for legacy gamepad support
+//        (gamepad.buttonX.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONP : internal_input_state[0].buttons&=~INPUTBUTTONP;
+    }
+}
 - (void)didPush3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player {
     player--;
     
@@ -717,6 +762,8 @@ char CalculateDeviceHighByte(int deviceNumber)
     assert(len==ROM1_SIZE);
     biosRom1Copy = (unsigned char *)malloc(len);
     memcpy(biosRom1Copy, [data bytes], len);
+    
+    //there's supposed to be a 3rd BIOS here, so add that later
     
     // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for soem JAP games. We still have to init the memory tho
     NSString *rom2Path = [[self BIOSPath] stringByAppendingPathComponent:@"rom2.rom"];
