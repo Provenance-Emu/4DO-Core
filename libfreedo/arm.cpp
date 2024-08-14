@@ -600,14 +600,37 @@ unsigned char * _arm_Init()
 
 void _arm_Destroy()
 {
-	io_interface(EXT_WRITE_NVRAM,pNVRam);//_3do_SaveNVRAM(pNVRam);
+    io_interface(EXT_WRITE_NVRAM,pNVRam);//_3do_SaveNVRAM(pNVRam);
 
+    if (profiling != NULL) {
         delete []profiling;
-		delete []profiling2;
-		delete []profiling3;
-	delete []pNVRam;
-	delete []pRom;
-	delete []pRam;
+        profiling = NULL;
+    }
+    
+    if (profiling2 != NULL) {
+        delete []profiling2;
+        profiling2 = NULL;
+    }
+    
+    if (profiling3 != NULL) {
+        delete []profiling3;
+        profiling3 = NULL;
+    }
+    
+    if (pNVRam != NULL) {
+        delete []pNVRam;
+        pNVRam = NULL;
+    }
+    
+    if (pRom != NULL) {
+        delete []pRom;
+        pRom = NULL;
+    }
+    
+    if (pRam != NULL) {
+        delete []pRam;
+        pRam = NULL;
+    }
 }
 
 void _arm_Reset()
