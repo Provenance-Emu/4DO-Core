@@ -11,6 +11,7 @@
 		575ACC2E1582D50400EAC45A /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
 		575ACC331582D50400EAC45A /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF71582C37400EAC45A /* rem.c */; };
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
+		B30E9ACF2C6FADF100C1431E /* PVCoreBridge in Frameworks */ = {isa = PBXBuildFile; productRef = B30E9ACE2C6FADF100C1431E /* PVCoreBridge */; };
 		B37C00682BFF6A8D00FEC6AC /* PVSupport in Frameworks */ = {isa = PBXBuildFile; productRef = B37C00672BFF6A8D00FEC6AC /* PVSupport */; };
 		B37C006A2BFF6ACB00FEC6AC /* FreeDOGameCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37C00692BFF6ACB00FEC6AC /* FreeDOGameCore.swift */; };
 		B37C00732BFF730600FEC6AC /* PVEmulatorCore in Frameworks */ = {isa = PBXBuildFile; productRef = B37C00722BFF730600FEC6AC /* PVEmulatorCore */; };
@@ -168,6 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B30E9ACF2C6FADF100C1431E /* PVCoreBridge in Frameworks */,
 				B37C00682BFF6A8D00FEC6AC /* PVSupport in Frameworks */,
 				B37C00732BFF730600FEC6AC /* PVEmulatorCore in Frameworks */,
 				B3AFCF5A2977A66600A01010 /* PVLogging in Frameworks */,
@@ -414,6 +416,7 @@
 				B3AFCF592977A66600A01010 /* PVLogging */,
 				B37C00672BFF6A8D00FEC6AC /* PVSupport */,
 				B37C00722BFF730600FEC6AC /* PVEmulatorCore */,
+				B30E9ACE2C6FADF100C1431E /* PVCoreBridge */,
 			);
 			productName = FreeDO;
 			productReference = B3D1804628963FEF001207AF /* PVFreeDO.framework */;
@@ -449,6 +452,7 @@
 			packageReferences = (
 				B37C00662BFF6A8D00FEC6AC /* XCLocalSwiftPackageReference "../../PVSupport" */,
 				B37C006B2BFF6BFF00FEC6AC /* XCLocalSwiftPackageReference "../../PVEmulatorCore" */,
+				B30E9ACD2C6FADF100C1431E /* XCLocalSwiftPackageReference "../../PVCoreBridge" */,
 			);
 			projectDirPath = "";
 			projectRoot = "";
@@ -1146,6 +1150,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		B30E9ACD2C6FADF100C1431E /* XCLocalSwiftPackageReference "../../PVCoreBridge" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../PVCoreBridge;
+		};
 		B37C00662BFF6A8D00FEC6AC /* XCLocalSwiftPackageReference "../../PVSupport" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../PVSupport;
@@ -1157,6 +1165,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B30E9ACE2C6FADF100C1431E /* PVCoreBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PVCoreBridge;
+		};
 		B37C00672BFF6A8D00FEC6AC /* PVSupport */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PVSupport;
