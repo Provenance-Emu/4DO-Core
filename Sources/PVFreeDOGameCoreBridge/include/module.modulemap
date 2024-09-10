@@ -1,0 +1,4 @@
+module PVFreeDOGameCoreBridge {
+    header "../PVFreeDOGameCoreBridge.h"
+    export *
+}
