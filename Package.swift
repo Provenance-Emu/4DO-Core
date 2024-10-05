@@ -81,7 +81,8 @@ let package = Package(
                 "PVAudio",
                 "PVSupport",
                 "libfreedo",
-                "PVFreeDOGameCoreBridge"
+                "PVFreeDOGameCoreBridge",
+                "PVFreeDOGameCoreOptions"
             ],
             resources: [
                 .process("Resources/Core.plist")
@@ -118,6 +119,7 @@ let package = Package(
                 "PVSupport",
                 "PVPlists",
                 "PVObjCUtils",
+                "PVFreeDOGameCoreOptions"
             ],
             cSettings: [
                 .unsafeFlags(["-fmodules", "-fcxx-modules"]),
@@ -126,6 +128,20 @@ let package = Package(
                 .define("__LIBRETRO__", to: "1"),
                 .define("HAVE_COCOATOUCH", to: "1"),
                 .define("__GCCUNIX__", to: "1"),
+            ]
+        ),
+        // MARK: ---------  Options  ---------- //
+        .target(
+            name: "PVFreeDOGameCoreOptions",
+            dependencies: [
+                "PVEmulatorCore",
+                "PVCoreBridge",
+                "PVLogging",
+                "PVSupport",
+                "libfreedo",
+            ],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
             ]
         ),
 
@@ -176,9 +192,6 @@ let package = Package(
             ],
             resources: [
                 .copy("Resources/3DO 240p Calibration Suite V1C.iso")
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
             ]
         )
     ],

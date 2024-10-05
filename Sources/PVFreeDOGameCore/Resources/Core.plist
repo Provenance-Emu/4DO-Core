@@ -5,7 +5,7 @@
 	<key>PVCoreIdentifier</key>
 	<string>com.provenance.core.FreeDO</string>
 	<key>PVPrincipleClass</key>
-	<string>PVFreeDO.PVFreeDOGameCore</string>
+	<string>PVFreeDOGameCore.PVFreeDOGameCore</string>
 	<key>PVSupportedSystems</key>
 	<array>
 		<string>com.provenance.3DO</string>

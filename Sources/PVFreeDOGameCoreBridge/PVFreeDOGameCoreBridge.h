@@ -25,12 +25,13 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@import PVEmulatorCore;
 @import PVCoreObjCBridge;
-@import PVCoreBridge;
 @import Foundation;
 @import libcue;
 @import libfreedo;
+
+@protocol ObjCBridgedCoreBridge;
+@protocol PV3DOSystemResponderClient;
 
 struct VolumeHeader             // 132 bytes
 {
@@ -70,25 +71,25 @@ unsigned char nvramhead[]=
 @interface PVFreeDOGameCoreBridge: PVCoreObjCBridge <ObjCBridgedCoreBridge, PV3DOSystemResponderClient>
 #pragma clang diagnostic pop
 
-@property (nonatomic, retain) NSString *romName;
-
-@property (nonatomic, assign)   unsigned char *biosRom1Copy;
-@property (nonatomic, assign)   unsigned char *biosRom2Copy;
-@property (nonatomic, assign)   VDLFrame *frame;
-
-@property (nonatomic, retain)   NSFileHandle *isoStream;
-@property (nonatomic, assign)   TrackMode isoMode;
-@property (nonatomic, assign)   int sectorCount;
-@property (nonatomic, assign)   unsigned long currentSector;
-@property (nonatomic, assign)   BOOL isSwapFrameSignaled;
-
-@property (nonatomic, assign)   uint32_t *videoBuffer;
-@property (nonatomic, assign)   uint32_t *videoBufferA;
-@property (nonatomic, assign)   uint32_t *videoBufferB ;
-
-@property (nonatomic, assign)   int videoWidth, videoHeight;
-@property (nonatomic, assign)   uintptr_t *sampleBuffer;
-@property (nonatomic, assign)   uint sampleCurrent;
-
-@property (nonatomic, copy) GCExtendedGamepadValueChangedHandler valueChangedHandler;
+//@property (nonatomic, retain) NSString *romName;
+//
+//@property (nonatomic, assign)   unsigned char *biosRom1Copy;
+//@property (nonatomic, assign)   unsigned char *biosRom2Copy;
+//@property (nonatomic, assign)   VDLFrame *frame;
+//
+//@property (nonatomic, retain)   NSFileHandle *isoStream;
+//@property (nonatomic, assign)   TrackMode isoMode;
+//@property (nonatomic, assign)   int sectorCount;
+//@property (nonatomic, assign)   unsigned long currentSector;
+//@property (nonatomic, assign)   BOOL isSwapFrameSignaled;
+//
+////@property (nonatomic, assign)   uint32_t *videoBuffer;
+////@property (nonatomic, assign)   uint32_t *videoBufferA;
+////@property (nonatomic, assign)   uint32_t *videoBufferB ;
+//
+//@property (nonatomic, assign)   int videoWidth, videoHeight;
+//@property (nonatomic, assign)   uintptr_t *sampleBuffer;
+//@property (nonatomic, assign)   uint sampleCurrent;
+//
+//@property (nonatomic, copy) GCExtendedGamepadValueChangedHandler valueChangedHandler;
 @end

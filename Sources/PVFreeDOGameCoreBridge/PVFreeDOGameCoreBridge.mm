@@ -33,6 +33,7 @@
 @import PVCoreObjCBridge;
 @import PVAudio;
 @import PVLoggingObjC;
+@import PVFreeDOGameCoreOptions;
 @import libfreedo;
 
 #if __has_include(<OpenGLES/ES3/gl.h>)
@@ -67,8 +68,29 @@ typedef struct{
 inputState internal_input_state[6];
 
 @interface PVFreeDOGameCoreBridge ()
+{
+    NSString *romName;
+    
+    unsigned char *biosRom1Copy;
+    unsigned char *biosRom2Copy;
+    VDLFrame *frame;
+    
+    NSFileHandle *isoStream;
+    TrackMode isoMode;
+    int sectorCount;
+    int currentSector;
+    BOOL isSwapFrameSignaled;
+    
+    uint32_t *videoBuffer;
+    uint32_t *videoBufferA;
+    uint32_t *videoBufferB ;
 
-
+    int videoWidth, videoHeight;
+    //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
+    int32_t sampleBuffer[TEMP_BUFFER_SIZE];
+    uint sampleCurrent;
+}
+@property (nonatomic, assign) BOOL loaded;
 @end
 
 static __weak PVFreeDOGameCoreBridge * _Nonnull _current;
@@ -83,7 +105,7 @@ static void *fdcCallback(int procedure, void *data)
     {
         case EXT_READ_ROMS:
         {
-            memcpy(data, current.biosRom1Copy, ROM1_SIZE);
+            memcpy(data, current->biosRom1Copy, ROM1_SIZE);
             //void *biosRom2Dest = (void*)((intptr_t)data + ROM2_SIZE);
             //memcpy(biosRom2Dest, current->biosRom2Copy, ROM2_SIZE);
             
@@ -95,18 +117,18 @@ static void *fdcCallback(int procedure, void *data)
             break;
         case EXT_SWAPFRAME:
         {
-            current.isSwapFrameSignaled = YES;
-            return current.frame;
+            current->isSwapFrameSignaled = YES;
+            return current->frame;
         }
         case EXT_PUSH_SAMPLE:
         {
-            current.sampleBuffer[current.sampleCurrent] = (uintptr_t)data;
-            current.sampleCurrent++;
-            if(current.sampleCurrent >= TEMP_BUFFER_SIZE)
+            current->sampleBuffer[current->sampleCurrent] = (uintptr_t)data;
+            current->sampleCurrent++;
+            if(current->sampleCurrent >= TEMP_BUFFER_SIZE)
             {
-                current.sampleCurrent = 0;
-                [[current ringBufferAtIndex:0] writeBuffer:current.sampleBuffer maxLength:sizeof(int32_t) * TEMP_BUFFER_SIZE];
-                memset(current.sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
+                current->sampleCurrent = 0;
+                [[current ringBufferAtIndex:0] write:current->sampleBuffer size:sizeof(int32_t) * TEMP_BUFFER_SIZE];
+                memset(current->sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
             }
             
             break;
@@ -142,18 +164,18 @@ static void *fdcCallback(int procedure, void *data)
             break;
         case EXT_FRAMETRIGGER_MT:
         {
-            current.isSwapFrameSignaled = YES;
-            _freedo_Interface(FDP_DO_FRAME_MT, current.frame);
+            current->isSwapFrameSignaled = YES;
+            _freedo_Interface(FDP_DO_FRAME_MT, current->frame);
 
             break;
         }
         case EXT_READ2048:
-            [current readSector:current.currentSector toBuffer:(uint8_t*)data];
+            [current readSector:current->currentSector toBuffer:(uint8_t*)data];
             break;
         case EXT_GET_DISC_SIZE:
-            return (void *)(intptr_t)current.sectorCount;
+            return (void *)(intptr_t)current->sectorCount;
         case EXT_ON_SECTOR:
-            current.currentSector = (intptr_t)data;
+            current->currentSector = (intptr_t)data;
             break;
         case EXT_ARM_SYNC:
             //[current fdcCallbackArmSync:(intptr_t)data];
@@ -217,49 +239,68 @@ static void writeSaveFile(const char* path)
 - (instancetype)init {
     if((self = [super init])) {
         _current = self;
-        self.videoBufferA = (uint32_t*)malloc(self.videoWidth * self.videoHeight * 4);
-        self.videoBufferB = (uint32_t*)malloc(self.videoWidth * self.videoHeight * 4);
-        self.videoBuffer = self.videoBufferA;
-        self.sampleBuffer = (uintptr_t *)malloc(sizeof(uintptr_t) * TEMP_BUFFER_SIZE);
+        _current = self;
+        videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+        videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+//        sampleBuffer = (uintptr_t *)malloc(sizeof(uintptr_t) * TEMP_BUFFER_SIZE);
     }
     
     return self;
 }
 
 - (void)dealloc {
-    if (self.videoBuffer) {
-        free(self.videoBuffer);
+    if (self->videoBufferA) {
+        free(self->videoBufferA);
+        self->videoBufferA = nil;
+    }
+    if (self->videoBufferB) {
+        free(self->videoBufferB);
+        self->videoBufferB = nil;
     }
 }
 
 #pragma mark Execution
-- (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error
-{
+- (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error {
+    
+    /// Initial file I/O
     self.romName = [path copy];
 
     NSString *isoPath;
     NSError *errorCue;
     
-    self.currentSector = 0;
-    self.sampleCurrent = 0;
-    memset(self.sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
-
-    NSString *cue = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&errorCue];
-    
-    const char *cueCString = [cue UTF8String];
-    Cd *cd = cue_parse_string(cueCString);
-    ILOG(@"CUE file found and parsed");
-    if (cd_get_ntrack(cd)!=1)
-    {
+    /// Read content of cue file
+    NSString *cue = [NSString stringWithContentsOfFile:path
+                                              encoding:NSUTF8StringEncoding
+                                                 error:&errorCue];
+    if(errorCue) {
         ELOG(@"Cue file found, but the number of tracks within was not 1.");
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Error reading cue: %@", errorCue.localizedDescription]}];
+        }
         return NO;
     }
     
+    /// Cue loaded -- process it
+    const char *cueCString = [cue UTF8String];
+    Cd *cd = cue_parse_string(cueCString);
+    ILOG(@"CUE file found and parsed");
+    if (cd_get_ntrack(cd)!=1) {
+        ELOG(@"Cue file found, but the number of tracks within was not 1.");
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Cue file found, but the number of tracks within was not 1."}];
+        }
+        return NO;
+    }
+    
+    /// Check validity of CD Image mode from cue
     Track *track = cd_get_track(cd, 1);
-    self.isoMode = (TrackMode)track_get_mode(track);
+    self->isoMode = (TrackMode)track_get_mode(track);
 
-    if ((self.isoMode!=MODE_MODE1&&self.isoMode!=MODE_MODE1_RAW))
-    {
+    if ((self->isoMode!=MODE_MODE1&&self->isoMode!=MODE_MODE1_RAW)) {
         ELOG(@"Cue file found, but the track within was not in the right format (should be BINARY and Mode1+2048 or Mode1+2352)");
         return NO;
     }
@@ -267,35 +308,38 @@ static void writeSaveFile(const char* path)
     NSString *isoTrack = [NSString stringWithUTF8String:track_get_filename(track)];
     isoPath = [path stringByReplacingOccurrencesOfString:[path lastPathComponent] withString:isoTrack];
     
-    self.isoStream = [NSFileHandle fileHandleForReadingAtPath:isoPath];
+    self->isoStream = [NSFileHandle fileHandleForReadingAtPath:isoPath];
 
     uint8_t sectorZero[2048];
     [self readSector:0 toBuffer:sectorZero];
     VolumeHeader *header = (VolumeHeader*)sectorZero;
-    self.sectorCount = (int)reverseBytes(header->blockCount);
+    self->sectorCount = (int)reverseBytes(header->blockCount);
     VLOG(@"Sector count is %d", self.sectorCount);
 
-    // init libfreedo
+    /// init libfreedo
     [self loadBIOSes];
     [self initVideo];
     
-    self.videoBufferA = (uint32_t*)malloc(self.videoWidth * self.videoHeight * 4);
-    self.videoBufferB = (uint32_t*)malloc(self.videoWidth * self.videoHeight * 4);
-    self.videoBuffer = self.videoBufferA;
+    videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+    videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+    videoBuffer = self->videoBufferA;
 
-    memset(self.sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
+    currentSector = 0;
+    sampleCurrent = 0;
+
+    memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
 
     _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
     
-    // init NVRAM
+    self.loaded = true;
+    /// init NVRAM
     memcpy(_freedo_Interface(FDP_GETP_NVRAM, (void*)0), nvramhead, sizeof(nvramhead));
     
-    // load NVRAM save file
+    /// load NVRAM save file
     NSString *extensionlessFilename = [[path lastPathComponent] stringByDeletingPathExtension];
     NSString *batterySavesDirectory = [self batterySavesPath];
 
-    if([batterySavesDirectory length] != 0)
-    {
+    if([batterySavesDirectory length] != 0) {
         [[NSFileManager defaultManager] createDirectoryAtPath:batterySavesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
 
         NSString *filePath = [batterySavesDirectory stringByAppendingPathComponent:[extensionlessFilename stringByAppendingPathExtension:@"sav"]];
@@ -303,17 +347,17 @@ static void writeSaveFile(const char* path)
         loadSaveFile([filePath UTF8String]);
     }
     
-    // Begin per-game hacks
-    // First check if we find these bytes at offset 0x0 found in some dumps
+    /// Begin per-game hacks
+    /// First check if we find these bytes at offset 0x0 found in some dumps
     const uint8_t bytes[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x02, 0x00, 0x01 };
-    [self.isoStream seekToFileOffset: 0x0];
-    NSData *dataTrackBuffer = [self.isoStream readDataOfLength: 16];
+    [isoStream seekToFileOffset: 0x0];
+    NSData *dataTrackBuffer = [isoStream readDataOfLength: 16];
     NSData *dataCompare = [[NSData alloc] initWithBytes:bytes length:sizeof(bytes)];
     BOOL bytesFound = [dataTrackBuffer isEqualToData:dataCompare];
 
     // Read disc header, these 8 bytes seem to be unique for each game
-    [self.isoStream seekToFileOffset: bytesFound ? 0x60 : 0x50];
-    dataTrackBuffer = [self.isoStream readDataOfLength: 8];
+    [isoStream seekToFileOffset: bytesFound ? 0x60 : 0x50];
+    dataTrackBuffer = [isoStream readDataOfLength: 8];
 
     // Check if game requires hacks
     NSDictionary *checkBytes = @{
@@ -358,7 +402,7 @@ static void writeSaveFile(const char* path)
                                   };
 
     for (id hex in checkBytes) {
-        // Convert string of hex to byte array
+        /// Convert string of hex to byte array
         char buf[3];
         buf[2] = '\0';
         unsigned char *bytes = (unsigned char *)malloc([hex length]/2);
@@ -371,7 +415,7 @@ static void writeSaveFile(const char* path)
 
         dataCompare = [NSData dataWithBytesNoCopy:bytes length:[hex length]/2 freeWhenDone:YES];
 
-        // Apply found FIX_BIT_* hack
+        /// Apply found FIX_BIT_* hack
         if ([dataTrackBuffer isEqualToData:dataCompare])
             _freedo_Interface(FDP_SET_FIX_MODE, (void*)[checkBytes[hex] integerValue]);
     }
@@ -381,7 +425,7 @@ static void writeSaveFile(const char* path)
 
 - (void)executeFrame
 {
-    _freedo_Interface(FDP_DO_EXECFRAME, self.frame); // FDP_DO_EXECFRAME_MT ?
+    _freedo_Interface(FDP_DO_EXECFRAME, frame); // FDP_DO_EXECFRAME_MT ?
 }
 
 - (void)resetEmulation
@@ -391,21 +435,26 @@ static void writeSaveFile(const char* path)
 
 - (void)stopEmulation
 {
-    // save NVRAM file
-    NSString *extensionlessFilename = [[self.romName lastPathComponent] stringByDeletingPathExtension];
-    NSString *batterySavesDirectory = [self batterySavesPath];
-    
-    if([batterySavesDirectory length] != 0)
-    {
-        [[NSFileManager defaultManager] createDirectoryAtPath:batterySavesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
+    if(self.loaded) {
+        // save NVRAM file
+        NSString *extensionlessFilename = [[self.romName lastPathComponent] stringByDeletingPathExtension];
+        NSString *batterySavesDirectory = [self batterySavesPath];
         
-        NSString *filePath = [batterySavesDirectory stringByAppendingPathComponent:[extensionlessFilename stringByAppendingPathExtension:@"sav"]];
+        if([batterySavesDirectory length] != 0) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:batterySavesDirectory
+                                      withIntermediateDirectories:YES
+                                                       attributes:nil
+                                                            error:NULL];
+            
+            NSString *fileName = [extensionlessFilename stringByAppendingPathExtension:@"sav"];
+            NSString *filePath = [batterySavesDirectory stringByAppendingPathComponent:fileName];
+            
+            writeSaveFile([filePath UTF8String]);
+        }
         
-        writeSaveFile([filePath UTF8String]);
+        _freedo_Interface(FDP_DESTROY, (void*)0);
     }
-    
-    _freedo_Interface(FDP_DESTROY, (void*)0);
-    [self.isoStream closeFile];
+    [isoStream closeFile];
     [super stopEmulation];
 }
 
@@ -416,41 +465,42 @@ static void writeSaveFile(const char* path)
 
 - (void)readSector:(uint)sectorNumber toBuffer:(uint8_t*)buffer
 {
-    if(self.isoMode==MODE_MODE1_RAW)
+    if(isoMode==MODE_MODE1_RAW)
     {
-        [self.isoStream seekToFileOffset:2352 * sectorNumber + 0x10];
+        [isoStream seekToFileOffset:2352 * sectorNumber + 0x10];
     }
     else
     {
-        [self.isoStream seekToFileOffset:2048 * sectorNumber];
+        [isoStream seekToFileOffset:2048 * sectorNumber];
     }
-    NSData *data = [self.isoStream readDataOfLength:2048];
+    NSData *data = [isoStream readDataOfLength:2048];
     memcpy(buffer, [data bytes], 2048);
 }
 
 #pragma mark Video
-- (const void *)getVideoBufferWithHint:(void *)hint
+- (void *)getVideoBufferWithHint:(void *)hint
 {
     if(!hint) {
-        hint = self.videoBuffer;
+        hint = videoBuffer;
     }
 
-    if(self.isSwapFrameSignaled)
+    if(isSwapFrameSignaled)
     {
-        self.isSwapFrameSignaled = NO;
+        isSwapFrameSignaled = NO;
         struct BitmapCrop bmpcrop;
-        ScalingAlgorithm sca = None; //HQ4X;
+        #warning("TODO: Expose this as a core option")
+        ScalingAlgorithm sca = FreeDOGameCoreOptions.scalingAlgorithm;
         int rw, rh;
-        Get_Frame_Bitmap((VDLFrame *)self.frame, hint, 0, &bmpcrop, self.videoWidth, self.videoHeight, false, true, false, sca, &rw, &rh);
+        Get_Frame_Bitmap((VDLFrame *)frame, hint, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
     }
-    return self.videoBuffer;
+    return videoBuffer;
 }
 
 - (void)swapBuffers {
-    if (self.videoBuffer == self.videoBufferA) {
-        self.videoBuffer = self.videoBufferB;
+    if (self->videoBuffer == self->videoBufferA) {
+        self->videoBuffer = self->videoBufferB;
     } else {
-        self.videoBuffer = self.videoBufferA;
+        self->videoBuffer = self->videoBufferA;
     }
 }
 
@@ -459,15 +509,15 @@ static void writeSaveFile(const char* path)
 }
 
 - (CGRect)screenRect {
-    return CGRectMake(0, 0, self.videoWidth, self.videoHeight);
+    return CGRectMake(0, 0, videoWidth, videoHeight);
 }
 
 - (CGSize)aspectSize {
-    return CGSizeMake(self.videoWidth, self.videoHeight);
+    return CGSizeMake(videoWidth, videoHeight);
 }
 
 - (CGSize)bufferSize {
-    return CGSizeMake(self.videoWidth, self.videoHeight);
+    return CGSizeMake(videoWidth, videoHeight);
 }
 
 - (GLenum)pixelFormat {
@@ -482,7 +532,7 @@ static void writeSaveFile(const char* path)
     return GL_UNSIGNED_BYTE;
 }
 
-- (const void *)videoBuffer {
+- (void *)videoBuffer {
     return [self getVideoBufferWithHint:nil];
 }
 
@@ -497,7 +547,7 @@ static void writeSaveFile(const char* path)
 
 #pragma mark - Save States
 
-- (void)saveStateToFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block {
+- (void)saveStateToFileAtPath:(NSString *)fileName completionHandler:(void (^)(NSError * __nullable))block {
     size_t size = (uintptr_t)_freedo_Interface(FDP_GET_SAVE_SIZE, (void*)0);
 
     NSMutableData *data = [NSMutableData dataWithLength:size];
@@ -506,21 +556,40 @@ static void writeSaveFile(const char* path)
 
     NSError *error;
     BOOL didSucceed = [data writeToFile:fileName options:0 error:&error];
-    block(didSucceed, error);
+    if (error) {
+        block(error);
+    } else {
+        block(nil);
+    }
 }
 
-- (void)loadStateFromFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block {
+- (void)loadStateFromFileAtPath:(NSString *)fileName completionHandler:(void (^)(NSError * __nullable))block {
     NSError *error;
-    NSData *saveData = [NSData dataWithContentsOfFile:fileName options:0 error:&error];
+    NSData *saveData = [NSData dataWithContentsOfFile:fileName
+                                              options:0 error:&error];
+    if(error) {
+        block(error);
+    }
+    
     if (!saveData) {
-        block(NO, error);
+        NSError *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadState
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Save data was empty or unreadable."}];
+
+        block(error);
         return;
     }
 
-    BOOL succeeded = _freedo_Interface(FDP_DO_LOAD, (void *)saveData.bytes) != NULL;
+    BOOL succeeded = (_freedo_Interface(FDP_DO_LOAD, (void *)saveData.bytes) != NULL);
 
-    // This needs a better error handling.
-    block(succeeded, nil);
+    if(!succeeded) {
+        NSError *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadState
+                                         userInfo:@{NSLocalizedDescriptionKey: @"FreeDo could not load the save state."}];
+        block(error);
+    } else {
+        block(nil);
+    }
 }
 
 #pragma mark - Input
@@ -674,10 +743,10 @@ static void writeSaveFile(const char* path)
 
 - (void)initVideo {
     //HightResMode = 1;
-    self.videoWidth = 320;
-    self.videoHeight = 240;
-    self.frame = (VDLFrame*)malloc(sizeof(VDLFrame));
-    memset(self.frame, 0, sizeof(VDLFrame));
+    videoWidth = 320;
+    videoHeight = 240;
+    frame = (VDLFrame*)malloc(sizeof(VDLFrame));
+    memset(frame, 0, sizeof(VDLFrame));
 }
 
 - (void)loadBIOSes {
@@ -685,22 +754,22 @@ static void writeSaveFile(const char* path)
     NSData *data = [NSData dataWithContentsOfFile:rom1Path];
     NSUInteger len = [data length];
     assert(len==ROM1_SIZE);
-    self.biosRom1Copy = (unsigned char *)malloc(len);
-    memcpy(self.biosRom1Copy, [data bytes], len);
+    biosRom1Copy = (unsigned char *)malloc(len);
+    memcpy(biosRom1Copy, [data bytes], len);
 
     //there's supposed to be a 3rd BIOS here, so add that later
 
-    // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for soem JAP games. We still have to init the memory tho
+    // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for some JPN games. We still have to init the memory tho
     NSString *rom2Path = [[self BIOSPath] stringByAppendingPathComponent:@"rom2.rom"];
     data = [NSData dataWithContentsOfFile:rom2Path];
     if(data) {
         len = [data length];
         assert(len==ROM2_SIZE);
-        self.biosRom2Copy = (unsigned char *)malloc(len);
-        memcpy(self.biosRom2Copy, [data bytes], len);
+        biosRom2Copy = (unsigned char *)malloc(len);
+        memcpy(biosRom2Copy, [data bytes], len);
     } else {
-        self.biosRom2Copy = (unsigned char *)malloc(len);
-        memset(self.biosRom2Copy, 0, len);
+        biosRom2Copy = (unsigned char *)malloc(len);
+        memset(biosRom2Copy, 0, len);
     }
 }
 
