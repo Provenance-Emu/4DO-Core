@@ -239,7 +239,6 @@ static void writeSaveFile(const char* path)
 - (instancetype)init {
     if((self = [super init])) {
         _current = self;
-        _current = self;
         videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
         videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
 //        sampleBuffer = (uintptr_t *)malloc(sizeof(uintptr_t) * TEMP_BUFFER_SIZE);
@@ -257,6 +256,7 @@ static void writeSaveFile(const char* path)
         free(self->videoBufferB);
         self->videoBufferB = nil;
     }
+    _current = nil;
 }
 
 #pragma mark Execution
