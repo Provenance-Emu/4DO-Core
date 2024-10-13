@@ -31,7 +31,7 @@ enum Sources {
 }
 
 let package = Package(
-    name: "PVFreeDO",
+    name: "PVCore4DO",
     defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
