@@ -90,9 +90,9 @@ void Get_Frame_Bitmap(
 				gPart = linePtr->xCLUTG[((*srcPtr) >> 5) & 0x1F];
 				rPart = linePtr->xCLUTR[(*srcPtr) >> 10 & 0x1F];
 			}
-			*destPtr++ = bPart;
-			*destPtr++ = gPart;
-			*destPtr++ = rPart;
+            *destPtr++ = rPart;
+            *destPtr++ = gPart;
+            *destPtr++ = bPart;
 
 			destPtr += pointlessAlphaByte;
 			srcPtr++;

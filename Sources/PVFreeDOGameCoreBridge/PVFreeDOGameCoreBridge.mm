@@ -521,11 +521,11 @@ static void writeSaveFile(const char* path)
 }
 
 - (GLenum)pixelFormat {
-    return GL_BGRA;
+    return GL_RGBA;
 }
 
 - (GLenum)internalPixelFormat {
-    return GL_BGRA;
+    return GL_RGBA;
 }
 
 - (GLenum)pixelType {

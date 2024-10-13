@@ -21,10 +21,6 @@ open class PVFreeDOGameCore : PVEmulatorCore, @unchecked Sendable {
     @objc
     public required init() {
         super.init()
-//        let core = PVFreeDOGameCoreBridge.init { key in
-//            return self.get(variable: key)
-//        }
-        let core = PVFreeDOGameCoreBridge()
         self.bridge = (_bridge as! any ObjCBridgedCoreBridge)
     }
 }
