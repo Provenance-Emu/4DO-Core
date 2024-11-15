@@ -34,7 +34,7 @@ let package = Package(
     name: "PVCore4DO",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v17),
+        .iOS(.v16),
         .tvOS(.v16),
         .watchOS(.v9),
         .macOS(.v11),
