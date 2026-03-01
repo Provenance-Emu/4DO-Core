@@ -1,7 +1,7 @@
 /*
  Copyright (c) 2014, OpenEmu Team
- 
- 
+
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright
@@ -12,7 +12,7 @@
  * Neither the name of the OpenEmu Team nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY OpenEmu Team ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -70,17 +70,17 @@ inputState internal_input_state[6];
 @interface PVFreeDOGameCoreBridge ()
 {
     NSString *romName;
-    
+
     unsigned char *biosRom1Copy;
     unsigned char *biosRom2Copy;
     VDLFrame *frame;
-    
+
     NSFileHandle *isoStream;
     TrackMode isoMode;
     int sectorCount;
     int currentSector;
     BOOL isSwapFrameSignaled;
-    
+
     uint32_t *videoBuffer;
     uint32_t *videoBufferA;
     uint32_t *videoBufferB ;
@@ -108,7 +108,7 @@ static void *fdcCallback(int procedure, void *data)
             memcpy(data, current->biosRom1Copy, ROM1_SIZE);
             //void *biosRom2Dest = (void*)((intptr_t)data + ROM2_SIZE);
             //memcpy(biosRom2Dest, current->biosRom2Copy, ROM2_SIZE);
-            
+
             break;
         }
         case EXT_READ_NVRAM:
@@ -130,7 +130,7 @@ static void *fdcCallback(int procedure, void *data)
                 [[current ringBufferAtIndex:0] write:current->sampleBuffer size:sizeof(int32_t) * TEMP_BUFFER_SIZE];
                 memset(current->sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
             }
-            
+
             break;
         }
         case EXT_GET_PBUSLEN:
@@ -140,7 +140,7 @@ static void *fdcCallback(int procedure, void *data)
             // Set up raw data to return
             unsigned char *pbusData;
             pbusData = (unsigned char *)malloc(sizeof(unsigned char)*16);
-            
+
             pbusData[0x0] = 0x00;
             pbusData[0x1] = 0x48;
             pbusData[0x2] = CalculateDeviceLowByte(0);
@@ -157,7 +157,7 @@ static void *fdcCallback(int procedure, void *data)
             pbusData[0xD] = 0x80;
             pbusData[0xE] = CalculateDeviceLowByte(5);
             pbusData[0xF] = CalculateDeviceHighByte(5);
-            
+
             return pbusData;
         }
         case EXT_KPRINT:
@@ -181,7 +181,7 @@ static void *fdcCallback(int procedure, void *data)
             //[current fdcCallbackArmSync:(intptr_t)data];
             WLOG(@"fdcCallback EXT_ARM_SYNC not implimented");
             break;
-            
+
         default:
             break;
     }
@@ -191,30 +191,30 @@ static void *fdcCallback(int procedure, void *data)
 static void loadSaveFile(const char* path)
 {
     FILE *file;
-    
+
     file = fopen(path, "rb");
     if ( !file )
     {
         return;
     }
-    
+
     size_t size = NVRAM_SIZE;
     void *data = _freedo_Interface(FDP_GETP_NVRAM, (void*)0);
-    
+
     if (size == 0 || !data)
     {
         fclose(file);
         return;
     }
-    
+
     size_t rc = fread(data, sizeof(uint8_t), size, file);
     if ( rc != size )
     {
         ELOG(@"Couldn't load save file.");
     }
-    
+
     ILOG(@"Loaded save file: %s", path);
-    
+
     fclose(file);
 }
 
@@ -222,7 +222,7 @@ static void writeSaveFile(const char* path)
 {
     size_t size = NVRAM_SIZE;
     void *data = _freedo_Interface(FDP_GETP_NVRAM, (void*)0);
-    
+
     if(data != NULL && size > 0)
     {
         FILE *file = fopen(path, "wb");
@@ -244,7 +244,7 @@ static void writeSaveFile(const char* path)
         videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
 //        sampleBuffer = (uintptr_t *)malloc(sizeof(uintptr_t) * TEMP_BUFFER_SIZE);
     }
-    
+
     return self;
 }
 
@@ -261,54 +261,107 @@ static void writeSaveFile(const char* path)
 
 #pragma mark Execution
 - (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error {
-    
     /// Initial file I/O
     self.romName = [path copy];
 
-    NSString *isoPath;
-    NSError *errorCue;
-    
-    /// Read content of cue file
-    NSString *cue = [NSString stringWithContentsOfFile:path
-                                              encoding:NSUTF8StringEncoding
-                                                 error:&errorCue];
-    if(errorCue) {
-        ELOG(@"Cue file found, but the number of tracks within was not 1.");
-        if (error) {
-            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
-                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
-                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Error reading cue: %@", errorCue.localizedDescription]}];
-        }
-        return NO;
-    }
-    
-    /// Cue loaded -- process it
-    const char *cueCString = [cue UTF8String];
-    Cd *cd = cue_parse_string(cueCString);
-    ILOG(@"CUE file found and parsed");
-    if (cd_get_ntrack(cd)!=1) {
-        ELOG(@"Cue file found, but the number of tracks within was not 1.");
-        if (error) {
-            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
-                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
-                                     userInfo:@{NSLocalizedDescriptionKey: @"Cue file found, but the number of tracks within was not 1."}];
-        }
-        return NO;
-    }
-    
-    /// Check validity of CD Image mode from cue
-    Track *track = cd_get_track(cd, 1);
-    self->isoMode = (TrackMode)track_get_mode(track);
+    NSString *isoPath = nil;
+    NSString *cuePath = nil;
+    NSString *lowerExtension = [[path pathExtension] lowercaseString];
 
-    if ((self->isoMode!=MODE_MODE1&&self->isoMode!=MODE_MODE1_RAW)) {
-        ELOG(@"Cue file found, but the track within was not in the right format (should be BINARY and Mode1+2048 or Mode1+2352)");
+    /// Explicitly reject CHD since the core cannot read it
+    if ([lowerExtension isEqualToString:@"chd"]) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"CHD images are not supported by the FreeDO core. Please convert to CUE/BIN or ISO."}];
+        }
         return NO;
     }
-    
-    NSString *isoTrack = [NSString stringWithUTF8String:track_get_filename(track)];
-    isoPath = [path stringByReplacingOccurrencesOfString:[path lastPathComponent] withString:isoTrack];
-    
+
+    /// Prefer a cue file when provided or when a sibling exists
+    if ([lowerExtension isEqualToString:@"cue"]) {
+        cuePath = path;
+    } else {
+        NSString *siblingCue = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"cue"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:siblingCue]) {
+            cuePath = siblingCue;
+        }
+    }
+
+    if (cuePath) {
+        NSStringEncoding usedEncoding = NSUTF8StringEncoding;
+        NSError *errorCue = nil;
+        NSString *cue = [NSString stringWithContentsOfFile:cuePath usedEncoding:&usedEncoding error:&errorCue];
+
+        if (!cue && errorCue) {
+            cue = [NSString stringWithContentsOfFile:cuePath encoding:NSISOLatin1StringEncoding error:&errorCue];
+        }
+
+        if(!cue) {
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Error reading cue: %@", errorCue.localizedDescription]}];
+            }
+            return NO;
+        }
+
+        /// Cue loaded -- process it
+        const char *cueCString = [cue UTF8String];
+        Cd *cd = cue_parse_string(cueCString);
+        if (!cd) {
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Cue file could not be parsed."}];
+            }
+            return NO;
+        }
+        ILOG(@"CUE file found and parsed");
+        if (cd_get_ntrack(cd)!=1) {
+            ELOG(@"Cue file found, but the number of tracks within was not 1.");
+            cd_delete(cd);
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Cue file found, but the number of tracks within was not 1."}];
+            }
+            return NO;
+        }
+
+        /// Check validity of CD Image mode from cue
+        Track *track = cd_get_track(cd, 1);
+        self->isoMode = (TrackMode)track_get_mode(track);
+
+        if ((self->isoMode!=MODE_MODE1&&self->isoMode!=MODE_MODE1_RAW)) {
+            ELOG(@"Cue file found, but the track within was not in the right format (should be BINARY and Mode1+2048 or Mode1+2352)");
+            cd_delete(cd);
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Cue file found, but the track within was not in the right format (should be BINARY and Mode1+2048 or Mode1+2352)"}];
+            }
+            return NO;
+        }
+
+        NSString *isoTrack = [NSString stringWithUTF8String:track_get_filename(track)];
+        isoPath = [[cuePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:isoTrack];
+        cd_delete(cd);
+    } else {
+        /// No cue available, assume a single data track
+        isoPath = path;
+        self->isoMode = [lowerExtension isEqualToString:@"bin"] ? MODE_MODE1_RAW : MODE_MODE1;
+    }
+
     self->isoStream = [NSFileHandle fileHandleForReadingAtPath:isoPath];
+    if (!self->isoStream) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not open disc image at path %@", isoPath]}];
+        }
+        return NO;
+    }
 
     uint8_t sectorZero[2048];
     [self readSector:0 toBuffer:sectorZero];
@@ -319,7 +372,7 @@ static void writeSaveFile(const char* path)
     /// init libfreedo
     [self loadBIOSes];
     [self initVideo];
-    
+
     videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
     videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
     videoBuffer = self->videoBufferA;
@@ -330,11 +383,11 @@ static void writeSaveFile(const char* path)
     memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
 
     _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
-    
+
     self.loaded = true;
     /// init NVRAM
     memcpy(_freedo_Interface(FDP_GETP_NVRAM, (void*)0), nvramhead, sizeof(nvramhead));
-    
+
     /// load NVRAM save file
     NSString *extensionlessFilename = [[path lastPathComponent] stringByDeletingPathExtension];
     NSString *batterySavesDirectory = [self batterySavesPath];
@@ -346,7 +399,7 @@ static void writeSaveFile(const char* path)
 
         loadSaveFile([filePath UTF8String]);
     }
-    
+
     /// Begin per-game hacks
     /// First check if we find these bytes at offset 0x0 found in some dumps
     const uint8_t bytes[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x02, 0x00, 0x01 };
@@ -419,7 +472,7 @@ static void writeSaveFile(const char* path)
         if ([dataTrackBuffer isEqualToData:dataCompare])
             _freedo_Interface(FDP_SET_FIX_MODE, (void*)[checkBytes[hex] integerValue]);
     }
-    
+
     return YES;
 }
 
@@ -439,19 +492,19 @@ static void writeSaveFile(const char* path)
         // save NVRAM file
         NSString *extensionlessFilename = [[self.romName lastPathComponent] stringByDeletingPathExtension];
         NSString *batterySavesDirectory = [self batterySavesPath];
-        
+
         if([batterySavesDirectory length] != 0) {
             [[NSFileManager defaultManager] createDirectoryAtPath:batterySavesDirectory
                                       withIntermediateDirectories:YES
                                                        attributes:nil
                                                             error:NULL];
-            
+
             NSString *fileName = [extensionlessFilename stringByAppendingPathExtension:@"sav"];
             NSString *filePath = [batterySavesDirectory stringByAppendingPathComponent:fileName];
-            
+
             writeSaveFile([filePath UTF8String]);
         }
-        
+
         _freedo_Interface(FDP_DESTROY, (void*)0);
     }
     [isoStream closeFile];
@@ -570,7 +623,7 @@ static void writeSaveFile(const char* path)
     if(error) {
         block(error);
     }
-    
+
     if (!saveData) {
         NSError *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
                                              code:PVEmulatorCoreErrorCodeCouldNotLoadState
@@ -600,7 +653,7 @@ static void writeSaveFile(const char* path)
     {
         GCExtendedGamepad *gamepad = [self.controller1 extendedGamepad];
         GCControllerDirectionPad *dpad = [gamepad dpad];
-    
+
         (dpad.up.isPressed || gamepad.leftThumbstick.up.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONUP : internal_input_state[0].buttons&=~INPUTBUTTONUP;
         (dpad.down.isPressed || gamepad.leftThumbstick.down.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONDOWN : internal_input_state[0].buttons&=~INPUTBUTTONDOWN;
         (dpad.left.isPressed || gamepad.leftThumbstick.left.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONLEFT : internal_input_state[0].buttons&=~INPUTBUTTONLEFT;
@@ -612,15 +665,15 @@ static void writeSaveFile(const char* path)
 
         (gamepad.leftShoulder.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONL : internal_input_state[0].buttons&=~INPUTBUTTONL;
         (gamepad.rightShoulder.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONR : internal_input_state[0].buttons&=~INPUTBUTTONR;
-        
+
         (gamepad.leftTrigger.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONX : internal_input_state[0].buttons&=~INPUTBUTTONX;
         (gamepad.rightTrigger.isPressed) ? internal_input_state[0].buttons|=INPUTBUTTONP : internal_input_state[0].buttons&=~INPUTBUTTONP;
-        
+
     }
 }
 - (void)didPush3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player {
     player--;
-    
+
     switch(button)
     {
         case PV3DOButtonA:
@@ -656,7 +709,7 @@ static void writeSaveFile(const char* path)
         case PV3DOButtonR:
             internal_input_state[0].buttons|=INPUTBUTTONR;
             break;
-            
+
         default:
             break;
     }
@@ -664,7 +717,7 @@ static void writeSaveFile(const char* path)
 
 - (void)didRelease3DOButton:(PV3DOButton)button forPlayer:(NSInteger)player {
     player--;
-    
+
     switch(button)
     {
         case PV3DOButtonA:
@@ -700,7 +753,7 @@ static void writeSaveFile(const char* path)
         case PV3DOButtonR:
             internal_input_state[0].buttons&=~INPUTBUTTONR;
             break;
-            
+
         default:
             break;
     }
@@ -798,7 +851,7 @@ char CalculateDeviceLowByte(int deviceNumber) {
 char CalculateDeviceHighByte(int deviceNumber)
 {
     char returnValue = 0;
-    
+
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONA)     ? (char)0x01 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONLEFT)  ? (char)0x02 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONRIGHT) ? (char)0x04 : (char)0;
@@ -807,7 +860,7 @@ char CalculateDeviceHighByte(int deviceNumber)
     returnValue |= 0x20 & 0; // unknown
     returnValue |= 0x40 & 0; // unknown
     returnValue |= 0x80; // This last bit seems to indicate power and/or connectivity.
-    
+
     return returnValue;
 }
 
