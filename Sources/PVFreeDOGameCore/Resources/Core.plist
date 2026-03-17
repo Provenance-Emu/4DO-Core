@@ -16,5 +16,11 @@
 	<string>https://github.com/OpenEmu/4DO-Core</string>
 	<key>PVProjectVersion</key>
 	<string>0</string>
+	<key>PVLicenseName</key>
+	<string>GPL-2.0-only</string>
+	<key>PVLicenseURL</key>
+	<string>https://github.com/OpenEmu/4DO-Core/blob/HEAD/COPYING</string>
+	<key>PVCopyright</key>
+	<string>Copyright © 2011-2016 OpenEmu Team</string>
 </dict>
 </plist>
