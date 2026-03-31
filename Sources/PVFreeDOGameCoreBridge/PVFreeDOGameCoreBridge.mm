@@ -36,6 +36,10 @@
 @import PVFreeDOGameCoreOptions;
 @import libfreedo;
 
+#import <libchdr/chd.h>
+#import <stdint.h>
+#import <strings.h>
+
 #if __has_include(<OpenGLES/ES3/gl.h>)
 #import <OpenGLES/ES3/gl.h>
 #import <OpenGLES/ES3/glext.h>
@@ -89,9 +93,181 @@ inputState internal_input_state[6];
     //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
     int32_t sampleBuffer[TEMP_BUFFER_SIZE];
     uint sampleCurrent;
+
+    /// CHD (libchdr) disc access; when non-NULL, `isoStream` is nil and sectors are read via `chd_read`.
+    chd_file *chdFile;
+    uint8_t *chdHunkBuffer;
+    int64_t chdCachedHunkIndex;
+    uint32_t chdBytesPerHunk;
+    uint32_t chdBytesPerFrame;
+    uint32_t chdFramesPerHunk;
+    int32_t chdTotalFrames;
+    int32_t chdTrackLBA;
+    int32_t chdTrackFileOffset;
+    /// Bytes per linear disc frame for hack offset reads (2352/2048 for ISO; CHD `unitbytes`).
+    uint32_t discLinearFrameSize;
 }
 @property (nonatomic, assign) BOOL loaded;
 @end
+
+/// Parses CD-ROM track metadata; requires a single non-audio track (same constraint as one-track CUE).
+static BOOL ParseCHDTrackLayout(chd_file *chd, const chd_header *hd, uint32_t bpf, uint32_t fph, int32_t *outTrackLBA, int32_t *outFileOffset, int32_t *outTotalFrames, NSError **error) {
+    /// Width-limited scans (metadata strings are untrusted; avoid sscanf %s overflow vs `type`/`subtype`/gap buffers).
+    static const char * const kCHDMeta2Scan = "TRACK:%d TYPE:%63s SUBTYPE:%31s FRAMES:%d PREGAP:%d PGTYPE:%31s PGSUB:%31s POSTGAP:%d";
+    static const char * const kCHDMetaScan = "TRACK:%d TYPE:%63s SUBTYPE:%31s FRAMES:%d";
+
+    typedef struct {
+        int trackno;
+        int32_t lba;
+        int32_t file_offset;
+        BOOL is_audio;
+    } ParsedRow;
+
+    ParsedRow rows[100];
+    int rowCount = 0;
+    BOOL anyMode2 = NO;
+
+    int32_t plba = -150;
+    int32_t file_offset_run = 0;
+    uint32_t metaIndex = 0;
+
+    while (1) {
+        char meta[256];
+        chd_error merr;
+        int trackno = 0, frames = 0, pregap = 0, postgap = 0;
+        char type[64] = {0};
+        char subtype[32] = {0};
+        char pgtype[32] = {0};
+        char pgsub[32] = {0};
+
+        merr = chd_get_metadata(chd, CDROM_TRACK_METADATA2_TAG, metaIndex, meta, sizeof(meta), NULL, NULL, NULL);
+        if (merr == CHDERR_NONE) {
+            if (sscanf(meta, kCHDMeta2Scan, &trackno, type, subtype, &frames, &pregap, pgtype, pgsub, &postgap) < 4) {
+                break;
+            }
+        } else {
+            merr = chd_get_metadata(chd, CDROM_TRACK_METADATA_TAG, metaIndex, meta, sizeof(meta), NULL, NULL, NULL);
+            if (merr != CHDERR_NONE) {
+                break;
+            }
+            if (sscanf(meta, kCHDMetaScan, &trackno, type, subtype, &frames) < 4) {
+                break;
+            }
+            pregap = 0;
+            postgap = 0;
+            pgtype[0] = '\0';
+            pgsub[0] = '\0';
+        }
+
+        if (pregap < 0) {
+            pregap = 0;
+        }
+        if (postgap < 0) {
+            postgap = 0;
+        }
+
+        if (trackno < 1 || trackno > 99) {
+            metaIndex++;
+            continue;
+        }
+
+        if (frames <= 0) {
+            metaIndex++;
+            continue;
+        }
+
+        int32_t pregap_fixed = (trackno == 1) ? 150 : ((pgtype[0] == 'V') ? 0 : pregap);
+        int32_t pregap_dv = (pgtype[0] == 'V') ? pregap : 0;
+
+        if (pregap_dv > frames) {
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Invalid CHD track metadata (variable pregap exceeds track frames)."}];
+            }
+            return NO;
+        }
+
+        plba += pregap_fixed;
+
+        BOOL is_audio = (strcasecmp(type, "AUDIO") == 0);
+        if (strcasestr(type, "MODE2") != NULL) {
+            anyMode2 = YES;
+        }
+
+        rows[rowCount].trackno = trackno;
+        rows[rowCount].lba = plba;
+        rows[rowCount].file_offset = file_offset_run + pregap_dv;
+        rows[rowCount].is_audio = is_audio;
+        rowCount++;
+        if (rowCount >= 99) {
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: @"CHD has too many track metadata entries to load safely."}];
+            }
+            return NO;
+        }
+
+        file_offset_run += pregap_dv;
+        file_offset_run += frames - pregap_dv;
+        file_offset_run += postgap;
+        int pad = ((frames + 3) & ~3) - frames;
+        file_offset_run += pad;
+
+        plba += (frames - pregap_dv);
+        plba += postgap;
+
+        metaIndex++;
+    }
+
+    if (rowCount == 0) {
+        *outTrackLBA = 0;
+        *outFileOffset = 0;
+        if (hd->logicalbytes > 0) {
+            *outTotalFrames = (int32_t)(hd->logicalbytes / (uint64_t)bpf);
+        } else {
+            *outTotalFrames = (int32_t)((uint64_t)hd->totalhunks * (uint64_t)fph);
+        }
+        return YES;
+    }
+
+    if (rowCount > 1) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"This CHD has multiple tracks; FreeDO expects a single data track (same as one-track CUE/ISO)."}];
+        }
+        return NO;
+    }
+
+    if (rows[0].is_audio) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"CHD track is audio-only; a Mode 1 data track is required."}];
+        }
+        return NO;
+    }
+
+    if (anyMode2) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Mode 2 / XA tracks in CHD are not supported for FreeDO (use Mode 1 CUE/ISO-style images)."}];
+        }
+        return NO;
+    }
+
+    *outTrackLBA = rows[0].lba;
+    *outFileOffset = rows[0].file_offset;
+    if (hd->logicalbytes > 0) {
+        *outTotalFrames = (int32_t)(hd->logicalbytes / (uint64_t)bpf);
+    } else {
+        *outTotalFrames = plba;
+    }
+    return YES;
+}
 
 static __weak PVFreeDOGameCoreBridge * _Nonnull _current;
 
@@ -101,11 +277,19 @@ static __weak PVFreeDOGameCoreBridge * _Nonnull _current;
 static void *fdcCallback(int procedure, void *data)
 {
     __strong PVFreeDOGameCoreBridge * current = _current;
+    if (current == nil) {
+        if (procedure == EXT_READ2048 && data != NULL) {
+            memset(data, 0, 2048);
+        }
+        return (void *)0;
+    }
     switch(procedure)
     {
         case EXT_READ_ROMS:
         {
-            memcpy(data, current->biosRom1Copy, ROM1_SIZE);
+            if (data != NULL && current->biosRom1Copy != NULL) {
+                memcpy(data, current->biosRom1Copy, ROM1_SIZE);
+            }
             //void *biosRom2Dest = (void*)((intptr_t)data + ROM2_SIZE);
             //memcpy(biosRom2Dest, current->biosRom2Copy, ROM2_SIZE);
 
@@ -140,6 +324,9 @@ static void *fdcCallback(int procedure, void *data)
             // Set up raw data to return
             unsigned char *pbusData;
             pbusData = (unsigned char *)malloc(sizeof(unsigned char)*16);
+            if (pbusData == NULL) {
+                return (void *)0;
+            }
 
             pbusData[0x0] = 0x00;
             pbusData[0x1] = 0x48;
@@ -242,6 +429,9 @@ static void writeSaveFile(const char* path)
         _current = self;
         videoBufferA = (uint32_t*)malloc(videoWidth * videoHeight * 4);
         videoBufferB = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+        chdFile = NULL;
+        chdHunkBuffer = NULL;
+        chdCachedHunkIndex = -1;
 //        sampleBuffer = (uintptr_t *)malloc(sizeof(uintptr_t) * TEMP_BUFFER_SIZE);
     }
 
@@ -249,6 +439,18 @@ static void writeSaveFile(const char* path)
 }
 
 - (void)dealloc {
+    if (chdFile) {
+        chd_close(chdFile);
+        chdFile = NULL;
+    }
+    if (chdHunkBuffer) {
+        free(chdHunkBuffer);
+        chdHunkBuffer = NULL;
+    }
+    if (isoStream) {
+        [isoStream closeFile];
+        isoStream = nil;
+    }
     if (self->videoBufferA) {
         free(self->videoBufferA);
         self->videoBufferA = nil;
@@ -260,7 +462,251 @@ static void writeSaveFile(const char* path)
 }
 
 #pragma mark Execution
+
+/// Opens a CD-ROM CHD via libchdr and configures track layout (single data track only).
+- (BOOL)prepareCHDDiscAtPath:(NSString *)path error:(NSError **)error {
+    if (path.length == 0) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"CHD path is empty."}];
+        }
+        return NO;
+    }
+    if (chdFile) {
+        chd_close(chdFile);
+        chdFile = NULL;
+    }
+    if (chdHunkBuffer) {
+        free(chdHunkBuffer);
+        chdHunkBuffer = NULL;
+    }
+    chdCachedHunkIndex = -1;
+
+    chd_error cerr = chd_open(path.fileSystemRepresentation, CHD_OPEN_READ, NULL, &chdFile);
+    if (cerr != CHDERR_NONE || chdFile == NULL) {
+        if (error) {
+            NSString *msg = [NSString stringWithFormat:@"Could not open CHD: %s", chd_error_string(cerr)];
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: msg}];
+        }
+        if (chdFile) {
+            chd_close(chdFile);
+            chdFile = NULL;
+        }
+        return NO;
+    }
+
+    const chd_header *hd = chd_get_header(chdFile);
+    if (hd == NULL) {
+        chd_close(chdFile);
+        chdFile = NULL;
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"CHD header could not be read."}];
+        }
+        return NO;
+    }
+
+    chdBytesPerHunk = hd->hunkbytes;
+    if (hd->unitbytes == 2352u || hd->unitbytes == 2448u || hd->unitbytes == 2048u) {
+        chdBytesPerFrame = hd->unitbytes;
+    } else if (chdBytesPerHunk % 2448u == 0u) {
+        chdBytesPerFrame = 2448u;
+    } else if (chdBytesPerHunk % 2352u == 0u) {
+        chdBytesPerFrame = 2352u;
+    } else {
+        chd_close(chdFile);
+        chdFile = NULL;
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Unsupported CHD layout (expected CD frame sizes 2048/2352/2448)."}];
+        }
+        return NO;
+    }
+
+    if (chdBytesPerFrame == 0u || chdBytesPerHunk % chdBytesPerFrame != 0u) {
+        chd_close(chdFile);
+        chdFile = NULL;
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Invalid CHD hunk/frame geometry."}];
+        }
+        return NO;
+    }
+
+    chdFramesPerHunk = chdBytesPerHunk / chdBytesPerFrame;
+
+    if (!ParseCHDTrackLayout(chdFile, hd, chdBytesPerFrame, chdFramesPerHunk, &chdTrackLBA, &chdTrackFileOffset, &chdTotalFrames, error)) {
+        chd_close(chdFile);
+        chdFile = NULL;
+        return NO;
+    }
+
+    if (chdTotalFrames <= 0) {
+        chd_close(chdFile);
+        chdFile = NULL;
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"CHD reports zero frames."}];
+        }
+        return NO;
+    }
+
+    chdHunkBuffer = (uint8_t *)malloc(chdBytesPerHunk);
+    if (chdHunkBuffer == NULL) {
+        chd_close(chdFile);
+        chdFile = NULL;
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Out of memory loading CHD hunk buffer."}];
+        }
+        return NO;
+    }
+
+    /// Apply track mode only after CHD + hunk buffer succeed so OOM (or any prior failure) cannot desync `isoMode` / `discLinearFrameSize` from a still-open ISO.
+    isoMode = (chdBytesPerFrame == 2048u) ? MODE_MODE1 : MODE_MODE1_RAW;
+    discLinearFrameSize = chdBytesPerFrame;
+
+    /// CHD is fully usable; release any prior file-based disc handle (only after success so a bad CHD does not orphan a working ISO session).
+    if (isoStream) {
+        [isoStream closeFile];
+        isoStream = nil;
+    }
+
+    ILOG(@"CHD opened: frames=%d bpf=%u trackLBA=%d fileOffset=%d", chdTotalFrames, chdBytesPerFrame, chdTrackLBA, chdTrackFileOffset);
+    return YES;
+}
+
+/// Reads one decompressed CD frame (full `chdBytesPerFrame` bytes) at CHD CAD index `cad`.
+- (chd_error)readCHDFrameAtCAD:(uint32_t)cad buffer:(uint8_t *)frameBuf {
+    if (frameBuf == NULL) {
+        return CHDERR_INVALID_PARAMETER;
+    }
+    if (chdFile == NULL || chdHunkBuffer == NULL || chdBytesPerFrame == 0u || chdFramesPerHunk == 0u) {
+        /// Callers use at least 2448 bytes (`readSector` / `readDiscBytesAtOffset` stack frames).
+        memset(frameBuf, 0, 2448);
+        return CHDERR_INVALID_STATE;
+    }
+    if (chdTotalFrames <= 0 || (uint64_t)cad >= (uint64_t)chdTotalFrames) {
+        memset(frameBuf, 0, chdBytesPerFrame);
+        return CHDERR_NONE;
+    }
+    uint32_t hunknum = cad / chdFramesPerHunk;
+    uint32_t hunkofs = (cad % chdFramesPerHunk) * chdBytesPerFrame;
+    if ((uint64_t)hunkofs + (uint64_t)chdBytesPerFrame > (uint64_t)chdBytesPerHunk) {
+        memset(frameBuf, 0, chdBytesPerFrame);
+        return CHDERR_INVALID_DATA;
+    }
+    if (chdCachedHunkIndex != (int64_t)hunknum) {
+        chd_error rerr = chd_read(chdFile, hunknum, chdHunkBuffer);
+        if (rerr != CHDERR_NONE) {
+            memset(frameBuf, 0, chdBytesPerFrame);
+            return rerr;
+        }
+        chdCachedHunkIndex = (int64_t)hunknum;
+    }
+    memcpy(frameBuf, chdHunkBuffer + hunkofs, chdBytesPerFrame);
+    return CHDERR_NONE;
+}
+
+/// Copies linear disc bytes (ISO/BIN or CHD logical layout) starting at `offset`.
+- (BOOL)readDiscBytesAtOffset:(uint64_t)offset length:(NSUInteger)length into:(void *)dst error:(NSError **)error {
+    if (length > 0 && dst == NULL) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Disc read destination buffer is null."}];
+        }
+        return NO;
+    }
+    uint8_t *out = (uint8_t *)dst;
+    uint64_t remain = length;
+    uint64_t pos = offset;
+    uint32_t fs = discLinearFrameSize;
+    if (fs == 0u) {
+        if (error) {
+            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Disc frame size is unset."}];
+        }
+        return NO;
+    }
+    while (remain > 0) {
+        uint64_t fi64 = pos / fs;
+        if (fi64 > UINT32_MAX) {
+            if (error) {
+                *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                             code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Disc read offset out of range."}];
+            }
+            return NO;
+        }
+        uint32_t fi = (uint32_t)fi64;
+        uint32_t inner = (uint32_t)(pos % fs);
+        uint8_t frame[2448];
+        if (chdFile) {
+            chd_error ce = [self readCHDFrameAtCAD:fi buffer:frame];
+            if (ce != CHDERR_NONE) {
+                if (error) {
+                    NSString *msg = [NSString stringWithFormat:@"CHD read failed: %s", chd_error_string(ce)];
+                    *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                                 code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                             userInfo:@{NSLocalizedDescriptionKey: msg}];
+                }
+                return NO;
+            }
+        } else {
+            if (isoStream == nil) {
+                if (error) {
+                    *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                                 code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Disc file handle is not open."}];
+                }
+                return NO;
+            }
+            uint32_t readLen = (isoMode == MODE_MODE1_RAW) ? 2352u : 2048u;
+            if (isoMode == MODE_MODE1_RAW) {
+                [isoStream seekToFileOffset:(unsigned long long)(2352ull * fi)];
+            } else {
+                [isoStream seekToFileOffset:(unsigned long long)(2048ull * fi)];
+            }
+            NSData *chunk = [isoStream readDataOfLength:readLen];
+            if ((NSUInteger)chunk.length < readLen || chunk.bytes == NULL) {
+                if (error) {
+                    *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
+                                                 code:PVEmulatorCoreErrorCodeCouldNotLoadRom
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Short read from disc image."}];
+                }
+                return NO;
+            }
+            memcpy(frame, chunk.bytes, readLen);
+            if (readLen < sizeof(frame)) {
+                memset(frame + readLen, 0, sizeof(frame) - readLen);
+            }
+        }
+        size_t avail = (size_t)fs - (size_t)inner;
+        size_t take = remain < (uint64_t)avail ? (size_t)remain : avail;
+        memcpy(out, frame + inner, take);
+        out += take;
+        remain -= take;
+        pos += take;
+    }
+    return YES;
+}
+
 - (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error {
+    /// Tear down a running session before replacing disc/core state (avoids e.g. closing the old CHD in `prepareCHDDiscAtPath` while libfreedo is still active).
+    if (self.loaded) {
+        [self stopEmulation];
+    }
+
     /// Initial file I/O
     self.romName = [path copy];
 
@@ -268,14 +714,24 @@ static void writeSaveFile(const char* path)
     NSString *cuePath = nil;
     NSString *lowerExtension = [[path pathExtension] lowercaseString];
 
-    /// Explicitly reject CHD since the core cannot read it
     if ([lowerExtension isEqualToString:@"chd"]) {
-        if (error) {
-            *error = [NSError errorWithDomain:CoreError.PVEmulatorCoreErrorDomain
-                                         code:PVEmulatorCoreErrorCodeCouldNotLoadRom
-                                     userInfo:@{NSLocalizedDescriptionKey: @"CHD images are not supported by the FreeDO core. Please convert to CUE/BIN or ISO."}];
+        if (![self prepareCHDDiscAtPath:path error:error]) {
+            return NO;
         }
-        return NO;
+    } else {
+    /// Dropping CHD state when loading a file-based image (otherwise `readSector` would keep using the old CHD and handles leak).
+    if (chdFile) {
+        chd_close(chdFile);
+        chdFile = NULL;
+    }
+    if (chdHunkBuffer) {
+        free(chdHunkBuffer);
+        chdHunkBuffer = NULL;
+    }
+    chdCachedHunkIndex = -1;
+    if (isoStream) {
+        [isoStream closeFile];
+        isoStream = nil;
     }
 
     /// Prefer a cue file when provided or when a sibling exists
@@ -363,6 +819,9 @@ static void writeSaveFile(const char* path)
         return NO;
     }
 
+    discLinearFrameSize = (isoMode == MODE_MODE1_RAW) ? 2352u : 2048u;
+    }
+
     uint8_t sectorZero[2048];
     [self readSector:0 toBuffer:sectorZero];
     VolumeHeader *header = (VolumeHeader*)sectorZero;
@@ -403,14 +862,23 @@ static void writeSaveFile(const char* path)
     /// Begin per-game hacks
     /// First check if we find these bytes at offset 0x0 found in some dumps
     const uint8_t bytes[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x02, 0x00, 0x01 };
-    [isoStream seekToFileOffset: 0x0];
-    NSData *dataTrackBuffer = [isoStream readDataOfLength: 16];
+    uint8_t prefixScratch[16];
+    if (![self readDiscBytesAtOffset:0 length:sizeof(prefixScratch) into:prefixScratch error:NULL]) {
+        memset(prefixScratch, 0, sizeof(prefixScratch));
+        ELOG(@"Could not read disc prefix for game hack detection");
+    }
+    NSData *dataTrackBuffer = [NSData dataWithBytes:prefixScratch length:sizeof(prefixScratch)];
     NSData *dataCompare = [[NSData alloc] initWithBytes:bytes length:sizeof(bytes)];
     BOOL bytesFound = [dataTrackBuffer isEqualToData:dataCompare];
 
     // Read disc header, these 8 bytes seem to be unique for each game
-    [isoStream seekToFileOffset: bytesFound ? 0x60 : 0x50];
-    dataTrackBuffer = [isoStream readDataOfLength: 8];
+    uint8_t idScratch[8];
+    uint64_t idOff = bytesFound ? 0x60ull : 0x50ull;
+    if (![self readDiscBytesAtOffset:idOff length:sizeof(idScratch) into:idScratch error:NULL]) {
+        memset(idScratch, 0, sizeof(idScratch));
+        ELOG(@"Could not read disc ID bytes for game hack detection");
+    }
+    dataTrackBuffer = [NSData dataWithBytes:idScratch length:sizeof(idScratch)];
 
     // Check if game requires hacks
     NSDictionary *checkBytes = @{
@@ -506,8 +974,21 @@ static void writeSaveFile(const char* path)
         }
 
         _freedo_Interface(FDP_DESTROY, (void*)0);
+        self.loaded = NO;
     }
-    [isoStream closeFile];
+    if (chdFile) {
+        chd_close(chdFile);
+        chdFile = NULL;
+    }
+    if (chdHunkBuffer) {
+        free(chdHunkBuffer);
+        chdHunkBuffer = NULL;
+    }
+    chdCachedHunkIndex = -1;
+    if (isoStream) {
+        [isoStream closeFile];
+        isoStream = nil;
+    }
     [super stopEmulation];
 }
 
@@ -518,6 +999,32 @@ static void writeSaveFile(const char* path)
 
 - (void)readSector:(uint)sectorNumber toBuffer:(uint8_t*)buffer
 {
+    if (buffer == NULL) {
+        return;
+    }
+    if (chdFile) {
+        int64_t rel = (int64_t)sectorNumber - (int64_t)chdTrackLBA + (int64_t)chdTrackFileOffset;
+        if (rel < 0 || rel >= (int64_t)chdTotalFrames || rel > (int64_t)UINT32_MAX) {
+            memset(buffer, 0, 2048);
+            return;
+        }
+        uint8_t frame[2448];
+        chd_error ce = [self readCHDFrameAtCAD:(uint32_t)rel buffer:frame];
+        if (ce != CHDERR_NONE) {
+            memset(buffer, 0, 2048);
+            return;
+        }
+        if (isoMode == MODE_MODE1_RAW) {
+            memcpy(buffer, frame + 16, 2048);
+        } else {
+            memcpy(buffer, frame, 2048);
+        }
+        return;
+    }
+    if (isoStream == nil) {
+        memset(buffer, 0, 2048);
+        return;
+    }
     if(isoMode==MODE_MODE1_RAW)
     {
         [isoStream seekToFileOffset:2352 * sectorNumber + 0x10];
@@ -527,6 +1034,10 @@ static void writeSaveFile(const char* path)
         [isoStream seekToFileOffset:2048 * sectorNumber];
     }
     NSData *data = [isoStream readDataOfLength:2048];
+    if (data.length < 2048 || data.bytes == NULL) {
+        memset(buffer, 0, 2048);
+        return;
+    }
     memcpy(buffer, [data bytes], 2048);
 }
 

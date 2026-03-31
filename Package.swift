@@ -64,9 +64,12 @@ let package = Package(
         .package(path: "../../PVAudio"),
         .package(path: "../../PVLogging"),
         .package(path: "../../PVObjCUtils"),
-        .package(name: "PVPrimitives", path: "../PVPrimitives/"),
+        .package(name: "PVPrimitives", path: "../../PVPrimitives/"),
+        .package(name: "PVNetplay", path: "../../PVNetplay"),
 
-        .package(url: "https://github.com/Provenance-Emu/SwiftGenPlugin.git", branch: "develop"),
+        .package(url: "https://github.com/Provenance-Emu/SwiftGenPlugin.git", from: "1.1.3"),
+        .package(url: "https://github.com/OlehKulykov/PLzmaSDK.git",
+                 revision: "1.2.5"),
     ],
     targets: [
         
@@ -115,6 +118,7 @@ let package = Package(
             name: "PVFreeDOGameCoreBridge",
             dependencies: [
                 "libfreedo",
+                "PV4DO_libchdr",
                 "PVEmulatorCore",
                 "PVCoreBridge",
                 "PVCoreObjCBridge",
@@ -130,6 +134,8 @@ let package = Package(
                 .define("__LIBRETRO__", to: "1"),
                 .define("HAVE_COCOATOUCH", to: "1"),
                 .define("__GCCUNIX__", to: "1"),
+                /// SPM resolves `headerSearchPath` from this target’s folder (`Sources/PVFreeDOGameCoreBridge/`), not the package root.
+                .headerSearchPath("../../ThirdParty/libchdr/include"),
             ]
         ),
         // MARK: ---------  Options  ---------- //
@@ -180,6 +186,51 @@ let package = Package(
                 .headerSearchPath("./include"),
                 .headerSearchPath("./libcue-1.4.0/src/libcue"),
                 .headerSearchPath("./libcue-1.4.0/"),
+            ]
+        ),
+        // MARK: --------- libchdr (CHD) — vendored copy; target names prefixed so they do not clash with Mednafen’s `libchdr` / `zstd` in the workspace graph ---------- //
+        .target(
+            name: "PV4DO_libchdr",
+            dependencies: ["PV4DO_zstd", "PLzmaSDK"],
+            path: "ThirdParty/libchdr",
+            exclude: [
+                ".git",
+                ".github",
+                "CMakeLists.txt",
+                "README.md",
+                "LICENSE.txt",
+                "pkg-config.pc.in",
+                "deps",
+                "src/link.T"
+            ],
+            sources: ["src"],
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("include"),
+                .headerSearchPath("deps"),
+                .headerSearchPath("deps/lzma-24.05/include"),
+                .define("HAVE_ZLIB", to: "1"),
+                .define("HAVE_FLAC", to: "1")
+            ],
+            linkerSettings: [
+                .linkedLibrary("z")
+            ]
+        ),
+        .target(
+            name: "PV4DO_zstd",
+            path: "ThirdParty/libchdr/deps/zstd-1.5.6/lib",
+            exclude: [
+                "compress",
+                "dictBuilder",
+                "deprecated",
+                "legacy"
+            ],
+            sources: ["common", "decompress"],
+            publicHeadersPath: ".",
+            cSettings: [
+                .headerSearchPath("."),
+                .define("ZSTD_LEGACY_SUPPORT", to: "0"),
+                .define("ZSTD_STATIC_LINKING_ONLY", to: "1")
             ]
         ),
         // MARK: Tests
