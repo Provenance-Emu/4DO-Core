@@ -92,4 +92,10 @@ unsigned char nvramhead[]=
 //@property (nonatomic, assign)   uint sampleCurrent;
 //
 //@property (nonatomic, copy) GCExtendedGamepadValueChangedHandler valueChangedHandler;
+
+// MARK: RetroAchievements
+/// Pointer to 3DO main DRAM (2 MiB DRAM + 1 MiB VRAM = 3 MiB) via FDP_GETP_RAMS.
+@property (nonatomic, readonly, nullable) void *systemRAMPtr;
+/// Size in bytes of the exposed 3DO RAM (3 MiB).
+@property (nonatomic, readonly) NSUInteger systemRAMSize;
 @end
