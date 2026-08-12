@@ -194,7 +194,13 @@ let package = Package(
             dependencies: ["PV4DO_zstd", "PLzmaSDK"],
             path: "ThirdParty/libchdr",
             exclude: [
-                ".git",
+                // No ".git" here: unlike Mednafen's libchdr, which is a real git
+                // submodule and therefore has a .git file to exclude, this is a
+                // vendored copy committed directly into this repo. SwiftPM treats an
+                // exclude that resolves to a missing path as an error
+                // ("Invalid Exclude ... File not found") and aborts package-graph
+                // resolution, so listing .git here broke any cold resolve of the
+                // workspace. It only appeared to work while a cached graph survived.
                 ".github",
                 "CMakeLists.txt",
                 "README.md",
