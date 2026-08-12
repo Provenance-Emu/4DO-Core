@@ -17,11 +17,18 @@ import PVFreeDOGameCoreOptions
 open class PVFreeDOGameCore : PVEmulatorCore, @unchecked Sendable {
     
     let _bridge: PVFreeDOGameCoreBridge = .init()
-    
+
     @objc
     public required init() {
         super.init()
         self.bridge = (_bridge as! any ObjCBridgedCoreBridge)
+    }
+
+    public override func executeFrame() {
+        super.executeFrame()
+        if achievementsActive {
+            tickAchievements()
+        }
     }
 }
 

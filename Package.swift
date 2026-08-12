@@ -66,6 +66,8 @@ let package = Package(
         .package(path: "../../PVObjCUtils"),
         .package(name: "PVPrimitives", path: "../../PVPrimitives/"),
         .package(name: "PVNetplay", path: "../../PVNetplay"),
+        .package(path: "../../PVRcheevos"),
+        .package(name: "PVRcheevosBridge", path: "../../PVRcheevosBridge"),
 
         .package(url: "https://github.com/Provenance-Emu/SwiftGenPlugin.git", from: "1.1.3"),
         .package(url: "https://github.com/OlehKulykov/PLzmaSDK.git",
@@ -87,7 +89,9 @@ let package = Package(
                 "PVPrimitives",
                 "libfreedo",
                 "PVFreeDOGameCoreBridge",
-                "PVFreeDOGameCoreOptions"
+                "PVFreeDOGameCoreOptions",
+                .product(name: "PVRcheevos", package: "PVRcheevos"),
+                .product(name: "PVRcheevosBridge", package: "PVRcheevosBridge"),
             ],
             resources: [
                 .process("Resources/Core.plist")

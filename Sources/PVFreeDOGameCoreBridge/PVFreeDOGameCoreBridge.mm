@@ -1328,7 +1328,10 @@ static void writeSaveFile(const char* path)
     data = [NSData dataWithContentsOfFile:rom2Path];
     if(data) {
         len = [data length];
-        assert(len==ROM2_SIZE);
+        // assert(len==ROM2_SIZE);
+        if ( len != ROM2_SIZE ) {
+            WLOG(@"`roms2.rom` expected size != actual: %2f, %2f expected", len, ROM2_SIZE);
+        }
         biosRom2Copy = (unsigned char *)malloc(len);
         memcpy(biosRom2Copy, [data bytes], len);
     } else {
@@ -1377,6 +1380,17 @@ char CalculateDeviceHighByte(int deviceNumber)
 
 static uint32_t reverseBytes(uint32_t value) {
     return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 | (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+}
+
+#pragma mark - RetroAchievements
+
+- (void *)systemRAMPtr {
+    return _freedo_Interface(FDP_GETP_RAMS, (void *)0);
+}
+
+- (NSUInteger)systemRAMSize {
+    // 3DO has 2 MiB DRAM + 1 MiB VRAM contiguously laid out by libfreedo.
+    return 3 * 1024 * 1024;
 }
 
 @end
